@@ -3,7 +3,70 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BraFit - Coach </title>
+<title>IronSystem con Firebase</title>
+<style>
+/* Mantengo tus estilos anteriores */
+body { font-family:'Segoe UI', sans-serif; background:#1a1a2e; color:#f5f5f5; margin:0; padding:0; }
+header { padding:1rem; background:#16213e; text-align:center; }
+.nav-tabs { display:flex; gap:0.5rem; padding:1rem; overflow-x:auto; background: rgba(0,0,0,0.2);}
+.nav-tab { padding:0.5rem 1rem; border-radius:20px; cursor:pointer; background:rgba(255,255,255,0.05); color:#aaa;}
+.nav-tab.active { background:#ff6b35; color:#fff;}
+.section { display:none; padding:1rem;}
+.section.active { display:block;}
+.card { background: rgba(255,255,255,0.05); padding:1rem; margin-bottom:1rem; border-radius:12px;}
+.btn { padding:0.5rem 1rem; border:none; border-radius:10px; cursor:pointer; background:#ff6b35; color:white; margin-top:0.5rem;}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="authContainer" style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100vh;">
+  <h1>IronSystem</h1>
+  <input type="email" id="email" placeholder="Correo" style="margin:0.5rem;">
+  <input type="password" id="password" placeholder="Contraseña" style="margin:0.5rem;">
+  <button class="btn" onclick="register()">Registrarse</button>
+  <button class="btn" onclick="login()">Ingresar</button>
+</div>
+
+<!-- APP -->
+<div id="appContainer" style="display:none;">
+  <header><h1>IronSystem</h1> <button class="btn" onclick="logout()">Salir</button></header>
+  <nav class="nav-tabs">
+    <button class="nav-tab active" onclick="showSection('dashboard')">Dashboard</button>
+    <button class="nav-tab" onclick="showSection('routines')">Rutinas</button>
+    <button class="nav-tab" onclick="showSection('exercises')">Ejercicios</button>
+    <button class="nav-tab" onclick="showSection('progress')">Progreso</button>
+  </nav>
+
+  <section id="dashboard" class="section active">
+    <div class="card"><h2>Bienvenido</h2><p id="welcomeUser"></p></div>
+  </section>
+
+  <section id="routines" class="section">
+    <div class="card">
+      <h2>Mis Rutinas</h2>
+      <input type="text" id="routineName" placeholder="Nombre rutina">
+      <button class="btn" onclick="addRoutine()">Agregar Rutina</button>
+      <ul id="routineList"></ul>
+    </div>
+  </section>
+
+  <section id="exercises" class="section">
+    <div class="card">
+      <h2>Mis Ejercicios</h2>
+      <input type="text" id="exerciseName" placeholder="Nombre ejercicio">
+      <button class="btn" onclick="addExercise()">Agregar Ejercicio</button>
+      <ul id="exerciseList"></ul>
+    </div>
+  </section>
+
+  <section id="progress" class="section">
+    <div class="card">
+      <h2>Progreso</h2>
+      <ul id="progressList"></ul>
+    </div>
+  </section>
+</div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
@@ -11,7 +74,7 @@ import {
   getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut 
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 import { 
-  getFirestore, collection, addDoc, getDocs 
+  getFirestore, collection, addDoc, getDocs, query, where 
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 // 🔥 CONFIG
@@ -20,200 +83,112 @@ const firebaseConfig = {
   authDomain: "brafitcoach.firebaseapp.com",
   projectId: "brafitcoach",
 };
-
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-window.db = db;
-window.auth = auth;
-
 let userId = null;
 
-// 🔐 ESTADO LOGIN
+// LOGIN STATE
 onAuthStateChanged(auth, async (user) => {
-  if (user) {
+  if(user){
     userId = user.uid;
-    document.getElementById("authContainer").style.display = "none";
-    document.getElementById("appContainer").style.display = "block";
-    await initApp(); // cargar todos los datos
+    document.getElementById('authContainer').style.display='none';
+    document.getElementById('appContainer').style.display='block';
+    document.getElementById('welcomeUser').innerText = `Usuario: ${user.email}`;
+    await loadData();
   } else {
-    document.getElementById("authContainer").style.display = "block";
-    document.getElementById("appContainer").style.display = "none";
+    document.getElementById('authContainer').style.display='flex';
+    document.getElementById('appContainer').style.display='none';
   }
 });
 
-// 🔥 REGISTRO
-window.register = async function() {
-  const email = document.getElementById("email").value;
-  const pass = document.getElementById("password").value;
-  if (!email || !pass) { alert("Completa correo y contraseña"); return; }
-  try { await createUserWithEmailAndPassword(auth, email, pass); alert("Usuario creado ✅"); }
-  catch (e) { alert("Error: " + e.message); }
+// REGISTER
+window.register = async () => {
+  const email = document.getElementById('email').value;
+  const pass = document.getElementById('password').value;
+  if(!email || !pass){ alert("Completa correo y contraseña"); return; }
+  try{
+    await createUserWithEmailAndPassword(auth,email,pass);
+    alert("Usuario creado ✅");
+  }catch(e){ alert("Error: "+e.message); }
 }
 
-// 🔥 LOGIN
-window.login = async function() {
-  const email = document.getElementById("email").value;
-  const pass = document.getElementById("password").value;
-  if (!email || !pass) { alert("Completa correo y contraseña"); return; }
-  try { await signInWithEmailAndPassword(auth, email, pass); alert("Bienvenida ✅"); }
-  catch (e) { alert("Error: " + e.message); }
+// LOGIN
+window.login = async () => {
+  const email = document.getElementById('email').value;
+  const pass = document.getElementById('password').value;
+  if(!email || !pass){ alert("Completa correo y contraseña"); return; }
+  try{
+    await signInWithEmailAndPassword(auth,email,pass);
+    alert("Bienvenida ✅");
+  }catch(e){ alert("Error: "+e.message); }
 }
 
-// 🔥 LOGOUT
-window.logout = async function() { await signOut(auth); }
+// LOGOUT
+window.logout = async () => { await signOut(auth); }
 
-// 🔥 DATA
-window.data = {
-  exercises: [],
-  routines: [],
-  workouts: [],
-  progress: []
-};
-
-// 🔥 FUNCIONES FIREBASE
-async function loadCollection(name) {
-  const snapshot = await getDocs(collection(db, "usuarios", userId, name));
-  return snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+// NAVIGATION
+window.showSection = (id) => {
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('.nav-tab').forEach(b=>b.classList.remove('active'));
+  document.querySelector(`.nav-tab[onclick="showSection('${id}')"]`).classList.add('active');
 }
 
-async function initApp() {
-  data.exercises = await loadCollection("exercises");
-  data.routines = await loadCollection("routines");
-  data.workouts = await loadCollection("workouts");
-  data.progress = await loadCollection("progress");
-  renderExercises();
-  renderRoutines();
-  renderProgress();
-  renderDashboard();
+// 🔥 FIRESTORE CRUD
+async function loadData(){
+  await loadRoutines();
+  await loadExercises();
+  await loadProgress();
 }
 
-// 🔥 GUARDAR EJERCICIO
-window.saveExercise = async function() {
-  const name = document.getElementById("exerciseName").value;
-  const muscle = document.getElementById("muscleGroup").value;
-  if (!name) { alert("Escribe algo"); return; }
-  const docRef = await addDoc(collection(db, "usuarios", userId, "exercises"), { name, muscle });
-  data.exercises.push({ id: docRef.id, name, muscle });
-  renderExercises();
-  document.getElementById("exerciseName").value = "";
+// Rutinas
+async function addRoutine(){
+  const name = document.getElementById('routineName').value;
+  if(!name) return;
+  await addDoc(collection(db,'routines'), { userId, name, created:new Date() });
+  document.getElementById('routineName').value='';
+  await loadRoutines();
+}
+async function loadRoutines(){
+  const q = query(collection(db,'routines'), where('userId','==',userId));
+  const snapshot = await getDocs(q);
+  const list = document.getElementById('routineList');
+  list.innerHTML='';
+  snapshot.forEach(doc=>{
+    const li = document.createElement('li'); li.innerText = doc.data().name; list.appendChild(li);
+  });
 }
 
-// 🔥 GUARDAR RUTINA
-window.saveRoutine = async function() {
-  const name = document.getElementById("routineName").value;
-  if (!name) { alert("Escribe el nombre"); return; }
-  const docRef = await addDoc(collection(db, "usuarios", userId, "routines"), { name });
-  data.routines.push({ id: docRef.id, name });
-  renderRoutines();
-  document.getElementById("routineName").value = "";
+// Ejercicios
+async function addExercise(){
+  const name = document.getElementById('exerciseName').value;
+  if(!name) return;
+  await addDoc(collection(db,'exercises'), { userId, name, created:new Date() });
+  document.getElementById('exerciseName').value='';
+  await loadExercises();
+}
+async function loadExercises(){
+  const q = query(collection(db,'exercises'), where('userId','==',userId));
+  const snapshot = await getDocs(q);
+  const list = document.getElementById('exerciseList');
+  list.innerHTML='';
+  snapshot.forEach(doc=>{
+    const li = document.createElement('li'); li.innerText = doc.data().name; list.appendChild(li);
+  });
 }
 
-// 🔥 RENDER EJERCICIOS
-function renderExercises() {
-  const container = document.getElementById("exercisesList");
-  container.innerHTML = data.exercises.map(e => `<div class="card">${e.name} - ${e.muscle}</div>`).join("");
+// Progreso demo
+async function loadProgress(){
+  const q = query(collection(db,'progress'), where('userId','==',userId));
+  const snapshot = await getDocs(q);
+  const list = document.getElementById('progressList');
+  list.innerHTML='';
+  snapshot.forEach(doc=>{
+    const li = document.createElement('li'); li.innerText = `${doc.data().type || 'Ejercicio'} - ${doc.data().value || 0}`; list.appendChild(li);
+  });
 }
-
-// 🔥 RENDER RUTINAS
-function renderRoutines() {
-  const container = document.getElementById("routinesList");
-  container.innerHTML = data.routines.map(r => `<div class="card">${r.name}</div>`).join("");
-}
-
-// 🔥 RENDER PROGRESO
-function renderProgress() {
-  const container = document.getElementById("progressList");
-  container.innerHTML = data.progress.map(p => `<div class="card">${p.date || ''} - ${p.note || ''}</div>`).join("");
-}
-
-// 🔥 DASHBOARD
-function renderDashboard() {
-  document.getElementById("totalExercises").innerText = data.exercises.length;
-  document.getElementById("totalRoutines").innerText = data.routines.length;
-}
-
 </script>
-
-<style>
-body { font-family: Arial; background:#0f172a; color:white; padding:20px; }
-input, button { padding:10px; margin:5px; border-radius:8px; border:none; }
-button { background:orange; color:white; cursor:pointer; }
-.card { background:#1e293b; padding:10px; margin-top:10px; border-radius:10px; }
-.nav-tab.active { background: #f97316; }
-.nav-tab { margin: 3px; }
-section { display:none; }
-</style>
-
-</head>
-<body>
-
-<!-- LOGIN -->
-<div id="authContainer">
-  <h2>Login / Registro</h2>
-  <input type="email" id="email" placeholder="Correo"><br>
-  <input type="password" id="password" placeholder="Contraseña"><br>
-  <button onclick="register()">Registrarse</button>
-  <button onclick="login()">Iniciar sesión</button>
-</div>
-
-<!-- APP -->
-<div id="appContainer" style="display:none;">
-  <h1>💪 BraFit Coach PRO</h1>
-  <button onclick="logout()">Cerrar sesión</button>
-
-  <!-- Navegación -->
-  <div>
-    <button class="nav-tab active" onclick="showSection('dashboard')">📊 Dashboard</button>
-    <button class="nav-tab" onclick="showSection('routines')">📝 Rutinas</button>
-    <button class="nav-tab" onclick="showSection('exercises')">📚 Ejercicios</button>
-    <button class="nav-tab" onclick="showSection('progress')">📈 Progreso</button>
-  </div>
-
-  <!-- SECCIONES -->
-  <section id="dashboard">
-    <h2>Dashboard</h2>
-    <p>Total ejercicios: <span id="totalExercises">0</span></p>
-    <p>Total rutinas: <span id="totalRoutines">0</span></p>
-  </section>
-
-  <section id="routines">
-    <h2>Rutinas</h2>
-    <input type="text" id="routineName" placeholder="Nombre rutina">
-    <button onclick="saveRoutine()">Agregar</button>
-    <div id="routinesList"></div>
-  </section>
-
-  <section id="exercises">
-    <h2>Ejercicios</h2>
-    <input type="text" id="exerciseName" placeholder="Ejercicio">
-    <select id="muscleGroup">
-      <option value="pecho">Pecho</option>
-      <option value="espalda">Espalda</option>
-      <option value="piernas">Piernas</option>
-    </select>
-    <button onclick="saveExercise()">Guardar</button>
-    <div id="exercisesList"></div>
-  </section>
-
-  <section id="progress">
-    <h2>Progreso</h2>
-    <div id="progressList"></div>
-  </section>
-
-</div>
-
-<script>
-// 🔥 SHOW SECTION
-function showSection(id) {
-  document.querySelectorAll("section").forEach(s => s.style.display = "none");
-  document.getElementById(id).style.display = "block";
-  document.querySelectorAll(".nav-tab").forEach(b => b.classList.remove("active"));
-  document.querySelector(`[onclick="showSection('${id}')"]`).classList.add("active");
-}
-showSection("dashboard"); // sección inicial
-</script>
-
 </body>
 </html>
