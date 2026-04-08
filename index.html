@@ -1,9 +1,40 @@
 <!DOCTYPE html>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { 
+  getFirestore, collection, addDoc, getDocs 
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "TU_API_KEY",
+  authDomain: "brafitcoach.firebaseapp.com",
+  projectId: "brafitcoach",
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+// 🔐 LOGIN AUTOMÁTICO
+signInAnonymously(auth);
+
+let userId = null;
+
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    userId = user.uid;
+    console.log("Usuario conectado:", userId);
+    window.userId = userId;
+    window.db = db;
+  }
+});
+</script>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IronSystem - Tu Rutina Inteligente</title>
+    <title>BraFit - Tu Rutina Inteligente</title>
     <style>
         * {
             margin: 0;
@@ -530,7 +561,6 @@
             opacity: 1;
         }
     </style>
-<base target="_blank">
 </head>
 <body>
     <div class="container">
@@ -798,20 +828,9 @@
             currentWorkout: null
         };
 
-        // Load data from localStorage
-        function loadData() {
-            const saved = localStorage.getItem('ironSystemData');
-            if (saved) {
-                const parsed = JSON.parse(saved);
-                data.exercises = parsed.exercises || data.exercises;
-                data.routines = parsed.routines || [];
-                data.workouts = parsed.workouts || [];
-            }
-        }
-
         // Save data to localStorage
         function saveData() {
-            localStorage.setItem('ironSystemData', JSON.stringify(data));
+            window.saveDataFirestore(data);
         }
 
         // Show toast notification
@@ -1325,7 +1344,6 @@
         }
 
         // Initialize
-        loadData();
         renderDashboard();
 
         // Setup nav click handlers properly
@@ -1345,4 +1363,13 @@
         });
     </script>
 </body>
+<div id="authContainer" style="padding:20px; text-align:center;">
+    <input type="email" id="email" placeholder="Correo"><br><br>
+    <input type="password" id="password" placeholder="Contraseña"><br><br>
+    
+    <button onclick="register()">Registrarse</button>
+    <button onclick="login()">Iniciar sesión</button>
+</div>
+
+
 </html>
