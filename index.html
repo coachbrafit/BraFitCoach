@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BraFitCoach</title>
+<title>BraFit - Coach</title>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
@@ -33,15 +33,24 @@ let userId = null;
 
 // 🔐 ESTADO LOGIN
 onAuthStateChanged(auth, async (user) => {
+  console.log("Estado auth:", user);
+
   if (user) {
     userId = user.uid;
     window.userId = userId;
-
+    console.log("Usuario logueado:", userId);
     document.getElementById("authContainer").style.display = "none";
     document.getElementById("appContainer").style.display = "block";
 
-    await loadExercises();
-  } else {
+    try {
+      await loadExercises();
+    } catch (e) {
+      console.error("Error cargando ejercicios:", e);
+    }
+
+    } else {
+    console.log("No hay usuario");
+
     document.getElementById("authContainer").style.display = "block";
     document.getElementById("appContainer").style.display = "none";
   }
@@ -52,8 +61,19 @@ window.register = async function () {
   const email = document.getElementById("email").value;
   const pass = document.getElementById("password").value;
 
-  await createUserWithEmailAndPassword(auth, email, pass);
-  alert("Usuario creado 🔥");
+  if (!email || !pass) {
+    alert("⚠️ Completa correo y contraseña");
+    return;
+  }
+
+  try {
+    const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
+    console.log("Usuario creado:", userCredential.user);
+    alert("✅ Usuario creado correctamente");
+  } catch (error) {
+    console.error("Error registro:", error);
+    alert("❌ Error: " + error.message);
+  }
 };
 
 // 🔥 LOGIN
@@ -61,8 +81,19 @@ window.login = async function () {
   const email = document.getElementById("email").value;
   const pass = document.getElementById("password").value;
 
-  await signInWithEmailAndPassword(auth, email, pass);
-  alert("Bienvenida 🔥");
+  if (!email || !pass) {
+    alert("⚠️ Completa correo y contraseña");
+    return;
+  }
+
+  try {
+    const userCredential = await signInWithEmailAndPassword(auth, email, pass);
+    console.log("Login correcto:", userCredential.user);
+    alert("✅ Bienvenida");
+  } catch (error) {
+    console.error("Error login:", error);
+    alert("❌ Error: " + error.message);
+  }
 };
 
 // 🔥 LOGOUT
@@ -80,16 +111,18 @@ window.saveExerciseFirebase = async function (exercise) {
 
 // 🔥 CARGAR
 async function loadExercises() {
+  if (!userId) {
+    console.warn("No hay userId aún");
+    return;
+  }
   const querySnapshot = await getDocs(
     collection(db, "usuarios", userId, "exercises")
   );
-
   window.data.exercises = [];
-
   querySnapshot.forEach(doc => {
     window.data.exercises.push({ id: doc.id, ...doc.data() });
   });
-
+  console.log("Ejercicios cargados:", window.data.exercises);
   window.renderExercises();
 }
 
@@ -175,13 +208,17 @@ async function saveExercise() {
     return;
   }
 
-  await window.saveExerciseFirebase({ name, muscle });
+  try {
+    await window.saveExerciseFirebase({ name, muscle });
+    alert("Guardado 🔥");
+    document.getElementById("exerciseName").value = "";
+    // 🔥 IMPORTANTE
+    await loadExercises();
 
-  alert("Guardado 🔥");
-
-  document.getElementById("exerciseName").value = "";
-
-  renderExercises();
+  } catch (error) {
+    console.error("Error guardando:", error);
+    alert("Error: " + error.message);
+  }
 }
 
 // 🔥 RENDER
