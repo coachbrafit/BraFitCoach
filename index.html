@@ -3,15 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BraFit - Coach PRO</title>
+<title>BraFit - Coach </title>
 
-<!-- 🔥 FIREBASE -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { 
   getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut 
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-
 import { 
   getFirestore, collection, addDoc, getDocs 
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
@@ -32,181 +30,189 @@ window.auth = auth;
 
 let userId = null;
 
-// 🔐 LOGIN STATE
+// 🔐 ESTADO LOGIN
 onAuthStateChanged(auth, async (user) => {
   if (user) {
     userId = user.uid;
-    window.userId = userId;
-
     document.getElementById("authContainer").style.display = "none";
     document.getElementById("appContainer").style.display = "block";
-
-    await initApp();
+    await initApp(); // cargar todos los datos
   } else {
     document.getElementById("authContainer").style.display = "block";
     document.getElementById("appContainer").style.display = "none";
   }
 });
 
-// 🔥 REGISTER
-window.register = async function () {
-  const email = emailInput.value;
-  const pass = passwordInput.value;
-
-  if (!email || !pass) return alert("Completa datos");
-
-  try {
-    await createUserWithEmailAndPassword(auth, email, pass);
-    alert("Usuario creado");
-  } catch (e) {
-    alert(e.message);
-  }
-};
+// 🔥 REGISTRO
+window.register = async function() {
+  const email = document.getElementById("email").value;
+  const pass = document.getElementById("password").value;
+  if (!email || !pass) { alert("Completa correo y contraseña"); return; }
+  try { await createUserWithEmailAndPassword(auth, email, pass); alert("Usuario creado ✅"); }
+  catch (e) { alert("Error: " + e.message); }
+}
 
 // 🔥 LOGIN
-window.login = async function () {
-  const email = emailInput.value;
-  const pass = passwordInput.value;
-
-  try {
-    await signInWithEmailAndPassword(auth, email, pass);
-  } catch (e) {
-    alert(e.message);
-  }
-};
+window.login = async function() {
+  const email = document.getElementById("email").value;
+  const pass = document.getElementById("password").value;
+  if (!email || !pass) { alert("Completa correo y contraseña"); return; }
+  try { await signInWithEmailAndPassword(auth, email, pass); alert("Bienvenida ✅"); }
+  catch (e) { alert("Error: " + e.message); }
+}
 
 // 🔥 LOGOUT
-window.logout = async () => await signOut(auth);
+window.logout = async function() { await signOut(auth); }
 
 // 🔥 DATA
 window.data = {
   exercises: [],
   routines: [],
-  workouts: []
+  workouts: [],
+  progress: []
 };
 
-// 🔥 LOAD ALL
-async function loadAllData() {
-  const ex = await getDocs(collection(db, "usuarios", userId, "exercises"));
-  data.exercises = ex.docs.map(d => ({ id: d.id, ...d.data() }));
+// 🔥 FUNCIONES FIREBASE
+async function loadCollection(name) {
+  const snapshot = await getDocs(collection(db, "usuarios", userId, name));
+  return snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
 }
 
-// 🔥 INIT
-window.initApp = async function () {
-  await loadAllData();
+async function initApp() {
+  data.exercises = await loadCollection("exercises");
+  data.routines = await loadCollection("routines");
+  data.workouts = await loadCollection("workouts");
+  data.progress = await loadCollection("progress");
   renderExercises();
-};
+  renderRoutines();
+  renderProgress();
+  renderDashboard();
+}
+
+// 🔥 GUARDAR EJERCICIO
+window.saveExercise = async function() {
+  const name = document.getElementById("exerciseName").value;
+  const muscle = document.getElementById("muscleGroup").value;
+  if (!name) { alert("Escribe algo"); return; }
+  const docRef = await addDoc(collection(db, "usuarios", userId, "exercises"), { name, muscle });
+  data.exercises.push({ id: docRef.id, name, muscle });
+  renderExercises();
+  document.getElementById("exerciseName").value = "";
+}
+
+// 🔥 GUARDAR RUTINA
+window.saveRoutine = async function() {
+  const name = document.getElementById("routineName").value;
+  if (!name) { alert("Escribe el nombre"); return; }
+  const docRef = await addDoc(collection(db, "usuarios", userId, "routines"), { name });
+  data.routines.push({ id: docRef.id, name });
+  renderRoutines();
+  document.getElementById("routineName").value = "";
+}
+
+// 🔥 RENDER EJERCICIOS
+function renderExercises() {
+  const container = document.getElementById("exercisesList");
+  container.innerHTML = data.exercises.map(e => `<div class="card">${e.name} - ${e.muscle}</div>`).join("");
+}
+
+// 🔥 RENDER RUTINAS
+function renderRoutines() {
+  const container = document.getElementById("routinesList");
+  container.innerHTML = data.routines.map(r => `<div class="card">${r.name}</div>`).join("");
+}
+
+// 🔥 RENDER PROGRESO
+function renderProgress() {
+  const container = document.getElementById("progressList");
+  container.innerHTML = data.progress.map(p => `<div class="card">${p.date || ''} - ${p.note || ''}</div>`).join("");
+}
+
+// 🔥 DASHBOARD
+function renderDashboard() {
+  document.getElementById("totalExercises").innerText = data.exercises.length;
+  document.getElementById("totalRoutines").innerText = data.routines.length;
+}
+
 </script>
 
 <style>
-body {
-  font-family: Arial;
-  background: #0f172a;
-  color: white;
-  padding: 20px;
-}
-
-input, button, select {
-  padding: 10px;
-  margin: 5px;
-  border-radius: 8px;
-  border: none;
-}
-
-button {
-  background: orange;
-  color: white;
-  cursor: pointer;
-}
-
-.card {
-  background: #1e293b;
-  padding: 10px;
-  margin-top: 10px;
-  border-radius: 10px;
-}
+body { font-family: Arial; background:#0f172a; color:white; padding:20px; }
+input, button { padding:10px; margin:5px; border-radius:8px; border:none; }
+button { background:orange; color:white; cursor:pointer; }
+.card { background:#1e293b; padding:10px; margin-top:10px; border-radius:10px; }
+.nav-tab.active { background: #f97316; }
+.nav-tab { margin: 3px; }
+section { display:none; }
 </style>
-</head>
 
+</head>
 <body>
 
-<!-- 🔐 LOGIN -->
+<!-- LOGIN -->
 <div id="authContainer">
   <h2>Login / Registro</h2>
-  <input id="emailInput" type="email" placeholder="Correo">
-  <input id="passwordInput" type="password" placeholder="Contraseña">
-  <br>
+  <input type="email" id="email" placeholder="Correo"><br>
+  <input type="password" id="password" placeholder="Contraseña"><br>
   <button onclick="register()">Registrarse</button>
   <button onclick="login()">Iniciar sesión</button>
 </div>
 
-<!-- 🚀 APP PRO -->
+<!-- APP -->
 <div id="appContainer" style="display:none;">
-
+  <h1>💪 BraFit Coach PRO</h1>
   <button onclick="logout()">Cerrar sesión</button>
 
-  <h1>💪 BraFit PRO</h1>
-
-  <!-- 🔥 NAV -->
+  <!-- Navegación -->
   <div>
-    <button onclick="showTab('exercises')">Ejercicios</button>
+    <button class="nav-tab active" onclick="showSection('dashboard')">📊 Dashboard</button>
+    <button class="nav-tab" onclick="showSection('routines')">📝 Rutinas</button>
+    <button class="nav-tab" onclick="showSection('exercises')">📚 Ejercicios</button>
+    <button class="nav-tab" onclick="showSection('progress')">📈 Progreso</button>
   </div>
 
-  <!-- 🔥 EXERCISES -->
-  <div id="exercisesTab">
+  <!-- SECCIONES -->
+  <section id="dashboard">
+    <h2>Dashboard</h2>
+    <p>Total ejercicios: <span id="totalExercises">0</span></p>
+    <p>Total rutinas: <span id="totalRoutines">0</span></p>
+  </section>
 
-    <h3>Nuevo ejercicio</h3>
-    <input id="exerciseName" placeholder="Ejercicio">
+  <section id="routines">
+    <h2>Rutinas</h2>
+    <input type="text" id="routineName" placeholder="Nombre rutina">
+    <button onclick="saveRoutine()">Agregar</button>
+    <div id="routinesList"></div>
+  </section>
 
+  <section id="exercises">
+    <h2>Ejercicios</h2>
+    <input type="text" id="exerciseName" placeholder="Ejercicio">
     <select id="muscleGroup">
       <option value="pecho">Pecho</option>
       <option value="espalda">Espalda</option>
       <option value="piernas">Piernas</option>
     </select>
-
     <button onclick="saveExercise()">Guardar</button>
-
-    <h2>Lista</h2>
     <div id="exercisesList"></div>
+  </section>
 
-  </div>
+  <section id="progress">
+    <h2>Progreso</h2>
+    <div id="progressList"></div>
+  </section>
 
 </div>
 
 <script>
-
-// 🔥 SAVE
-async function saveExercise() {
-  const name = exerciseName.value;
-  const muscle = muscleGroup.value;
-
-  if (!name) return alert("Escribe algo");
-
-  const docRef = await addDoc(
-    collection(db, "usuarios", userId, "exercises"),
-    { name, muscle }
-  );
-
-  data.exercises.push({ id: docRef.id, name, muscle });
-
-  renderExercises();
-  exerciseName.value = "";
+// 🔥 SHOW SECTION
+function showSection(id) {
+  document.querySelectorAll("section").forEach(s => s.style.display = "none");
+  document.getElementById(id).style.display = "block";
+  document.querySelectorAll(".nav-tab").forEach(b => b.classList.remove("active"));
+  document.querySelector(`[onclick="showSection('${id}')"]`).classList.add("active");
 }
-
-// 🔥 RENDER
-function renderExercises() {
-  exercisesList.innerHTML = data.exercises.map(e => `
-    <div class="card">
-      ${e.name} - ${e.muscle}
-    </div>
-  `).join("");
-}
-
-// 🔥 NAV
-function showTab(tab) {
-  document.getElementById("exercisesTab").style.display = "block";
-}
-
+showSection("dashboard"); // sección inicial
 </script>
 
 </body>
