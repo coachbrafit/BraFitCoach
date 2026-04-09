@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IronSystem - Tu Rutina Inteligente</title>
+    <title>BRAFIT Coach </title>
     <style>
         * {
             margin: 0;
@@ -12,14 +12,22 @@
         }
 
         :root {
-            --primary: #ff6b35;
-            --secondary: #f7931e;
-            --dark: #1a1a2e;
-            --darker: #16213e;
-            --light: #e94560;
-            --success: #00d9ff;
-            --text: #f5f5f5;
-            --text-muted: #a0a0a0;
+            /* Colores BRAFIT Principales */
+            --primary: #1a2744;        /* Azul marino */
+            --secondary: #c9a962;      /* Dorado */
+            --gold-light: #d4b896;     /* Dorado claro */
+            
+            /* Colores de Soporte */
+            --dark: #1a2744;           
+            --darker: #0f1729;         
+            --light: #c9a962;          
+            --success: #c9a962;        
+            --accent-blue: #2d3e5c;    
+            
+            /* Texto */
+            --text: #f5f5f5;           
+            --text-muted: #a0a0a0;     
+            --text-gold: #c9a962;      
         }
 
         body {
@@ -38,6 +46,7 @@
             justify-content: center;
             min-height: 100vh;
             padding: 2rem;
+            background: linear-gradient(135deg, var(--dark) 0%, var(--darker) 100%);
         }
 
         .auth-box {
@@ -46,14 +55,15 @@
             padding: 2rem;
             width: 100%;
             max-width: 400px;
-            border: 1px solid rgba(255,255,255,0.1);
+            border: 1px solid rgba(201, 169, 98, 0.3);
         }
 
         .auth-title {
             font-size: 1.5rem;
             text-align: center;
             margin-bottom: 1.5rem;
-            color: var(--primary);
+            color: var(--secondary);
+            font-weight: 700;
         }
 
         .auth-input {
@@ -61,10 +71,15 @@
             padding: 0.875rem;
             margin-bottom: 1rem;
             border-radius: 12px;
-            border: 2px solid rgba(255,255,255,0.1);
+            border: 2px solid rgba(201, 169, 98, 0.2);
             background: rgba(0,0,0,0.3);
             color: var(--text);
             font-size: 1rem;
+        }
+
+        .auth-input:focus {
+            outline: none;
+            border-color: var(--secondary);
         }
 
         .auth-btn {
@@ -72,11 +87,17 @@
             padding: 0.875rem;
             border-radius: 12px;
             border: none;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: white;
-            font-weight: 600;
+            background: linear-gradient(135deg, var(--secondary), var(--gold-light));
+            color: var(--primary);
+            font-weight: 700;
             cursor: pointer;
             margin-bottom: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .auth-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(201, 169, 98, 0.3);
         }
 
         .auth-btn:disabled {
@@ -86,13 +107,13 @@
 
         /* Header */
         .header {
-            background: rgba(26, 26, 46, 0.95);
+            background: rgba(26, 39, 68, 0.95);
             backdrop-filter: blur(10px);
             padding: 1rem;
             position: sticky;
             top: 0;
             z-index: 100;
-            border-bottom: 2px solid var(--primary);
+            border-bottom: 2px solid var(--secondary);
         }
 
         .header-content {
@@ -107,13 +128,14 @@
 
         .header h1 {
             font-size: 1.5rem;
-            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            background: linear-gradient(45deg, var(--secondary), var(--gold-light));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             display: flex;
             align-items: center;
             gap: 0.5rem;
             margin: 0;
+            font-weight: 800;
         }
 
         .header-actions {
@@ -131,24 +153,24 @@
             border-radius: 20px;
             font-size: 0.75rem;
             font-weight: 600;
-            background: rgba(0, 217, 255, 0.2);
-            color: var(--success);
+            background: rgba(201, 169, 98, 0.2);
+            color: var(--secondary);
             white-space: nowrap;
         }
 
         .sync-badge.offline {
-            background: rgba(255, 107, 53, 0.2);
-            color: var(--primary);
+            background: rgba(26, 39, 68, 0.4);
+            color: var(--text-muted);
         }
 
         .sync-badge.loading {
-            background: rgba(255, 193, 7, 0.2);
-            color: #ffc107;
+            background: rgba(201, 169, 98, 0.3);
+            color: var(--gold-light);
         }
 
         .logout-btn {
-            background: rgba(255,255,255,0.1);
-            border: none;
+            background: rgba(201, 169, 98, 0.1);
+            border: 1px solid rgba(201, 169, 98, 0.3);
             color: var(--text);
             padding: 0.4rem 1rem;
             border-radius: 20px;
@@ -160,7 +182,8 @@
         }
 
         .logout-btn:hover {
-            background: rgba(255,255,255,0.2);
+            background: rgba(201, 169, 98, 0.2);
+            color: var(--secondary);
         }
 
         /* Navigation */
@@ -186,10 +209,16 @@
             font-weight: 600;
         }
 
+        .nav-tab:hover {
+            background: rgba(201, 169, 98, 0.1);
+            color: var(--secondary);
+        }
+
         .nav-tab.active {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: white;
-            border-color: var(--primary);
+            background: linear-gradient(135deg, var(--secondary), var(--gold-light));
+            color: var(--primary);
+            border-color: var(--secondary);
+            font-weight: 700;
         }
 
         /* Sections */
@@ -216,16 +245,17 @@
             border-radius: 16px;
             padding: 1.25rem;
             margin-bottom: 1rem;
-            border: 1px solid rgba(255,255,255,0.1);
+            border: 1px solid rgba(201, 169, 98, 0.2);
         }
 
         .card-title {
             font-size: 1.1rem;
             margin-bottom: 1rem;
-            color: var(--success);
+            color: var(--secondary);
             display: flex;
             align-items: center;
             gap: 0.5rem;
+            font-weight: 700;
         }
 
         /* Forms */
@@ -244,7 +274,7 @@
             width: 100%;
             padding: 0.875rem;
             border-radius: 12px;
-            border: 2px solid rgba(255,255,255,0.1);
+            border: 2px solid rgba(201, 169, 98, 0.2);
             background: rgba(0,0,0,0.3);
             color: var(--text);
             font-size: 1rem;
@@ -252,7 +282,7 @@
 
         input:focus, select:focus, textarea:focus {
             outline: none;
-            border-color: var(--primary);
+            border-color: var(--secondary);
         }
 
         /* Buttons */
@@ -270,23 +300,33 @@
         }
 
         .btn-primary {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: white;
+            background: linear-gradient(135deg, var(--secondary), var(--gold-light));
+            color: var(--primary);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(201, 169, 98, 0.3);
         }
 
         .btn-secondary {
             background: rgba(255,255,255,0.1);
             color: var(--text);
-            border: 2px solid rgba(255,255,255,0.2);
+            border: 2px solid rgba(201, 169, 98, 0.3);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(201, 169, 98, 0.1);
+            border-color: var(--secondary);
         }
 
         .btn-success {
-            background: linear-gradient(135deg, #00b894, #00cec9);
-            color: white;
+            background: linear-gradient(135deg, var(--secondary), var(--gold-light));
+            color: var(--primary);
         }
 
         .btn-danger {
-            background: linear-gradient(135deg, #d63031, #e17055);
+            background: linear-gradient(135deg, #8b2635, #a03045);
             color: white;
         }
 
@@ -296,11 +336,11 @@
 
         /* Exercise Cards */
         .exercise-card {
-            background: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02));
+            background: linear-gradient(135deg, rgba(201, 169, 98, 0.08), rgba(26, 39, 68, 0.4));
             border-radius: 16px;
             padding: 1.25rem;
             margin-bottom: 1rem;
-            border-left: 4px solid var(--primary);
+            border-left: 4px solid var(--secondary);
         }
 
         .exercise-header {
@@ -314,15 +354,17 @@
         .exercise-name {
             font-size: 1.1rem;
             font-weight: 700;
+            color: var(--text);
         }
 
         .exercise-muscle {
             font-size: 0.8rem;
-            color: var(--success);
-            background: rgba(0, 217, 255, 0.1);
+            color: var(--secondary);
+            background: rgba(201, 169, 98, 0.15);
             padding: 0.25rem 0.75rem;
             border-radius: 20px;
             white-space: nowrap;
+            font-weight: 600;
         }
 
         /* Quick Actions */
@@ -343,7 +385,7 @@
             padding: 1.25rem;
             border-radius: 16px;
             background: rgba(255,255,255,0.05);
-            border: 2px solid rgba(255,255,255,0.1);
+            border: 2px solid rgba(201, 169, 98, 0.2);
             color: var(--text);
             cursor: pointer;
             text-align: center;
@@ -351,8 +393,8 @@
         }
 
         .action-btn:hover {
-            background: rgba(255,107,53,0.2);
-            border-color: var(--primary);
+            background: rgba(201, 169, 98, 0.15);
+            border-color: var(--secondary);
             transform: translateY(-2px);
         }
 
@@ -388,7 +430,7 @@
             max-width: 500px;
             max-height: 90vh;
             overflow-y: auto;
-            border: 2px solid var(--primary);
+            border: 2px solid var(--secondary);
         }
 
         .modal-header {
@@ -398,12 +440,23 @@
             margin-bottom: 1.5rem;
         }
 
+        .modal-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--secondary);
+        }
+
         .close-btn {
             background: none;
             border: none;
             color: var(--text-muted);
             font-size: 1.5rem;
             cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .close-btn:hover {
+            color: var(--secondary);
         }
 
         /* Empty State */
@@ -417,8 +470,8 @@
         .spinner {
             width: 40px;
             height: 40px;
-            border: 4px solid rgba(255,255,255,0.1);
-            border-top-color: var(--primary);
+            border: 4px solid rgba(201, 169, 98, 0.2);
+            border-top-color: var(--secondary);
             border-radius: 50%;
             animation: spin 1s linear infinite;
         }
@@ -442,27 +495,28 @@
         }
 
         .stat-card {
-            background: linear-gradient(135deg, rgba(255,107,53,0.2), rgba(247,147,30,0.1));
+            background: linear-gradient(135deg, rgba(201, 169, 98, 0.2), rgba(201, 169, 98, 0.1));
             border-radius: 16px;
             padding: 1.25rem;
             text-align: center;
-            border: 1px solid rgba(255,107,53,0.3);
+            border: 1px solid rgba(201, 169, 98, 0.3);
         }
 
         .stat-card.blue {
-            background: linear-gradient(135deg, rgba(0,217,255,0.2), rgba(0,217,255,0.1));
-            border-color: rgba(0,217,255,0.3);
+            background: linear-gradient(135deg, rgba(26, 39, 68, 0.6), rgba(45, 62, 92, 0.4));
+            border-color: rgba(26, 39, 68, 0.5);
         }
 
         .stat-card.green {
-            background: linear-gradient(135deg, rgba(0,184,148,0.2), rgba(0,206,201,0.1));
-            border-color: rgba(0,184,148,0.3);
+            background: linear-gradient(135deg, rgba(201, 169, 98, 0.3), rgba(201, 169, 98, 0.15));
+            border-color: rgba(201, 169, 98, 0.4);
         }
 
         .stat-card-value {
             font-size: 2rem;
             font-weight: 700;
             margin-bottom: 0.25rem;
+            color: var(--secondary);
         }
 
         /* Muscle Map */
@@ -486,6 +540,7 @@
             padding: 0.75rem 1rem;
             background: rgba(0,0,0,0.3);
             border-radius: 10px;
+            border: 1px solid rgba(201, 169, 98, 0.1);
         }
 
         .muscle-bar {
@@ -498,7 +553,7 @@
 
         .muscle-fill {
             height: 100%;
-            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            background: linear-gradient(90deg, var(--secondary), var(--gold-light));
             border-radius: 3px;
             transition: width 0.5s ease;
         }
@@ -509,7 +564,7 @@
             border-radius: 16px;
             padding: 1.25rem;
             margin-bottom: 1rem;
-            border: 2px solid rgba(255,255,255,0.1);
+            border: 2px solid rgba(201, 169, 98, 0.2);
         }
 
         .set-row {
@@ -518,16 +573,16 @@
             gap: 0.5rem;
             align-items: center;
             padding: 0.75rem 0;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
+            border-bottom: 1px solid rgba(201, 169, 98, 0.1);
         }
 
         .timer-display {
             font-size: 3rem;
             font-weight: 700;
             text-align: center;
-            color: var(--success);
+            color: var(--secondary);
             font-family: 'Courier New', monospace;
-            text-shadow: 0 0 20px rgba(0, 217, 255, 0.5);
+            text-shadow: 0 0 20px rgba(201, 169, 98, 0.5);
             margin: 1rem 0;
         }
 
@@ -537,11 +592,11 @@
             bottom: 2rem;
             left: 50%;
             transform: translateX(-50%) translateY(100px);
-            background: var(--success);
-            color: var(--dark);
+            background: var(--secondary);
+            color: var(--primary);
             padding: 1rem 2rem;
             border-radius: 50px;
-            font-weight: 600;
+            font-weight: 700;
             z-index: 2000;
             opacity: 0;
             transition: all 0.3s ease;
@@ -553,7 +608,7 @@
         }
 
         .toast.error {
-            background: #d63031;
+            background: #8b2635;
             color: white;
         }
 
@@ -566,12 +621,12 @@
     <!-- Auth Container -->
     <div id="authContainer" class="auth-container">
         <div class="auth-box">
-            <h2 class="auth-title">💪 IronSystem</h2>
+            <h2 class="auth-title">🏋️ BRAFIT COACH</h2>
             <div id="authForm">
                 <input type="email" id="authEmail" class="auth-input" placeholder="Email" value="test@test.com">
                 <input type="password" id="authPassword" class="auth-input" placeholder="Contraseña" value="123456">
                 <button class="auth-btn" onclick="handleAuth()">Iniciar Sesión</button>
-                <button class="auth-btn" style="background: rgba(255,255,255,0.1);" onclick="handleRegister()">Crear Cuenta</button>
+                <button class="auth-btn" style="background: rgba(201, 169, 98, 0.1); color: var(--text);" onclick="handleRegister()">Crear Cuenta</button>
             </div>
             <div id="authLoading" class="hidden" style="text-align: center; padding: 2rem;">
                 <div class="spinner"></div>
@@ -585,7 +640,7 @@
         <!-- Header -->
         <header class="header">
             <div class="header-content">
-                <h1>💪 IronSystem</h1>
+                <h1>🏋️ BRAFIT COACH</h1>
                 <div class="header-actions">
                     <div class="sync-badge loading" id="syncBadge">
                         <span>●</span>
@@ -664,7 +719,7 @@
         <section id="workout" class="section">
             <div class="card">
                 <div class="card-title">🏋️ Selecciona Rutina</div>
-                <select id="workoutRoutineSelect" style="width: 100%; margin-bottom: 1rem; padding: 0.875rem; border-radius: 12px; border: 2px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.3); color: white;">
+                <select id="workoutRoutineSelect" style="width: 100%; margin-bottom: 1rem; padding: 0.875rem; border-radius: 12px; border: 2px solid rgba(201, 169, 98, 0.2); background: rgba(0,0,0,0.3); color: white;">
                     <option value="">-- Seleccionar --</option>
                 </select>
                 <button class="btn btn-primary btn-full" onclick="startSelectedRoutine()">Comenzar</button>
@@ -678,7 +733,7 @@
                     <div class="card-title" style="margin: 0;">📚 Ejercicios</div>
                     <button class="btn btn-primary" onclick="openModal('exerciseModal')">+ Agregar</button>
                 </div>
-                <input type="text" id="exerciseSearch" placeholder="🔍 Buscar..." style="width: 100%; margin-bottom: 1rem; padding: 0.875rem; border-radius: 12px; border: 2px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.3); color: white;" onkeyup="filterExercises()">
+                <input type="text" id="exerciseSearch" placeholder="🔍 Buscar..." style="width: 100%; margin-bottom: 1rem; padding: 0.875rem; border-radius: 12px; border: 2px solid rgba(201, 169, 98, 0.2); background: rgba(0,0,0,0.3); color: white;" onkeyup="filterExercises()">
                 <div id="exercisesList">
                     <p style="text-align: center; color: var(--text-muted);">Cargando ejercicios...</p>
                 </div>
@@ -700,7 +755,7 @@
                     <div class="stat-card-value" id="currentStreak">0</div>
                     <div style="font-size: 0.85rem; color: var(--text-muted);">Racha</div>
                 </div>
-                <div class="stat-card" style="background: linear-gradient(135deg, rgba(155,89,182,0.2), rgba(155,89,182,0.1)); border-color: rgba(155,89,182,0.3);">
+                <div class="stat-card" style="background: linear-gradient(135deg, rgba(201, 169, 98, 0.25), rgba(201, 169, 98, 0.1)); border-color: rgba(201, 169, 98, 0.4);">
                     <div class="stat-card-value" id="favoriteMuscle">-</div>
                     <div style="font-size: 0.85rem; color: var(--text-muted);">Favorito</div>
                 </div>
@@ -727,7 +782,7 @@
             </div>
             <div class="form-group">
                 <label>Días (Ctrl+Click para varios)</label>
-                <select id="routineDays" multiple style="height: 100px; width: 100%; padding: 0.5rem; border-radius: 12px; border: 2px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.3); color: white;">
+                <select id="routineDays" multiple style="height: 100px; width: 100%; padding: 0.5rem; border-radius: 12px; border: 2px solid rgba(201, 169, 98, 0.2); background: rgba(0,0,0,0.3); color: white;">
                     <option value="1">Lunes</option>
                     <option value="2">Martes</option>
                     <option value="3">Miércoles</option>
@@ -759,7 +814,7 @@
             </div>
             <div class="form-group">
                 <label>Grupo Muscular</label>
-                <select id="muscleGroup" style="width: 100%; padding: 0.875rem; border-radius: 12px; border: 2px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.3); color: white;">
+                <select id="muscleGroup" style="width: 100%; padding: 0.875rem; border-radius: 12px; border: 2px solid rgba(201, 169, 98, 0.2); background: rgba(0,0,0,0.3); color: white;">
                     <option value="pecho">Pecho</option>
                     <option value="espalda">Espalda</option>
                     <option value="hombros">Hombros</option>
@@ -771,7 +826,7 @@
             </div>
             <div class="form-group">
                 <label>Tipo</label>
-                <select id="exerciseType" style="width: 100%; padding: 0.875rem; border-radius: 12px; border: 2px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.3); color: white;">
+                <select id="exerciseType" style="width: 100%; padding: 0.875rem; border-radius: 12px; border: 2px solid rgba(201, 169, 98, 0.2); background: rgba(0,0,0,0.3); color: white;">
                     <option value="compound">Compuesto</option>
                     <option value="isolation">Aislamiento</option>
                 </select>
@@ -851,41 +906,28 @@
             currentWorkout: null
         };
 
-        // Auth State - CORREGIDO
         onAuthStateChanged(auth, async (user) => {
             console.log('Auth state changed:', user ? 'LOGGED IN' : 'LOGGED OUT');
             
             if (user) {
-                // USUARIO LOGUEADO
                 userId = user.uid;
-                
-                // Mostrar app, ocultar auth
                 document.getElementById('authContainer').classList.add('hidden');
                 document.getElementById('appContainer').classList.remove('hidden');
-                
-                // Resetear estado de carga
                 document.getElementById('authLoading').classList.add('hidden');
                 document.getElementById('authForm').classList.remove('hidden');
                 
-                // Cargar datos
                 setTimeout(async () => {
                     await loadUserData();
                 }, 300);
                 
             } else {
-                // USUARIO NO LOGUEADO (logout)
                 userId = null;
-                
-                // IMPORTANTE: Resetear datos
                 data.routines = [];
                 data.workouts = [];
                 data.exercises = data.exercises.filter(e => e.isDefault);
                 
-                // Ocultar app, mostrar auth
                 document.getElementById('appContainer').classList.add('hidden');
                 document.getElementById('authContainer').classList.remove('hidden');
-                
-                // IMPORTANTE: Resetear formulario de auth
                 document.getElementById('authLoading').classList.add('hidden');
                 document.getElementById('authForm').classList.remove('hidden');
                 
@@ -925,10 +967,8 @@
 
         window.logout = async () => {
             try {
-                // Cerrar sesión en Firebase
                 await signOut(auth);
                 showToast('👋 Sesión cerrada');
-                // El resto lo maneja onAuthStateChanged
             } catch (error) {
                 console.error('Error en logout:', error);
                 showToast('❌ Error al cerrar sesión', true);
@@ -941,7 +981,6 @@
             updateSyncStatus(true, 'Cargando...');
             
             try {
-                // Cargar ejercicios
                 try {
                     const exercisesQuery = query(collection(db, 'exercises'), where('userId', '==', userId));
                     const exercisesSnap = await getDocs(exercisesQuery);
@@ -951,7 +990,6 @@
                     console.error('Error ejercicios:', e);
                 }
 
-                // Cargar rutinas
                 try {
                     const routinesQuery = query(collection(db, 'routines'), where('userId', '==', userId));
                     const routinesSnap = await getDocs(routinesQuery);
@@ -960,7 +998,6 @@
                     console.error('Error rutinas:', e);
                 }
 
-                // Cargar workouts
                 try {
                     const workoutsQuery = query(collection(db, 'workouts'), where('userId', '==', userId));
                     const workoutsSnap = await getDocs(workoutsQuery);
@@ -1016,7 +1053,6 @@
             }
         }
 
-        // UI Functions
         window.showSection = (sectionId) => {
             document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
             document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
@@ -1051,9 +1087,9 @@
             const options = data.exercises.map(e => `<option value="${e.id}">${e.name}</option>`).join('');
             
             div.innerHTML = `
-                <select class="r-ex-select" style="padding: 0.5rem; border-radius: 8px; border: 2px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.3); color: white;">${options}</select>
-                <input type="number" class="r-ex-sets" value="3" min="1" style="padding: 0.5rem; border-radius: 8px; border: 2px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.3); color: white;">
-                <input type="number" class="r-ex-reps" value="10" min="1" style="padding: 0.5rem; border-radius: 8px; border: 2px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.3); color: white;">
+                <select class="r-ex-select" style="padding: 0.5rem; border-radius: 8px; border: 2px solid rgba(201, 169, 98, 0.2); background: rgba(0,0,0,0.3); color: white;">${options}</select>
+                <input type="number" class="r-ex-sets" value="3" min="1" style="padding: 0.5rem; border-radius: 8px; border: 2px solid rgba(201, 169, 98, 0.2); background: rgba(0,0,0,0.3); color: white;">
+                <input type="number" class="r-ex-reps" value="10" min="1" style="padding: 0.5rem; border-radius: 8px; border: 2px solid rgba(201, 169, 98, 0.2); background: rgba(0,0,0,0.3); color: white;">
                 <button class="btn btn-danger" onclick="this.parentElement.remove()" style="padding: 0.5rem;">×</button>
             `;
             
@@ -1175,15 +1211,15 @@
                 
                 let setsHtml = ex.setsCompleted.map((set, j) => `
                     <div class="set-row">
-                        <span style="color: var(--success); font-weight: 700;">${set.setNumber}</span>
-                        <input type="number" placeholder="kg" value="${set.weight}" onchange="updateSet(${i}, ${j}, 'weight', this.value)" style="padding: 0.5rem; border-radius: 8px; border: 2px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.3); color: white;">
-                        <input type="number" placeholder="reps" value="${set.reps}" onchange="updateSet(${i}, ${j}, 'reps', this.value)" style="padding: 0.5rem; border-radius: 8px; border: 2px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.3); color: white;">
-                        <input type="checkbox" ${set.completed ? 'checked' : ''} onchange="toggleSet(${i}, ${j}, this.checked)" style="width: 24px; height: 24px; accent-color: var(--success);">
+                        <span style="color: var(--secondary); font-weight: 700;">${set.setNumber}</span>
+                        <input type="number" placeholder="kg" value="${set.weight}" onchange="updateSet(${i}, ${j}, 'weight', this.value)" style="padding: 0.5rem; border-radius: 8px; border: 2px solid rgba(201, 169, 98, 0.2); background: rgba(0,0,0,0.3); color: white;">
+                        <input type="number" placeholder="reps" value="${set.reps}" onchange="updateSet(${i}, ${j}, 'reps', this.value)" style="padding: 0.5rem; border-radius: 8px; border: 2px solid rgba(201, 169, 98, 0.2); background: rgba(0,0,0,0.3); color: white;">
+                        <input type="checkbox" ${set.completed ? 'checked' : ''} onchange="toggleSet(${i}, ${j}, this.checked)" style="width: 24px; height: 24px; accent-color: var(--secondary);">
                     </div>
                 `).join('');
                 
                 div.innerHTML = `
-                    <div style="font-weight: 700; color: var(--primary); margin-bottom: 0.5rem;">${ex.name}</div>
+                    <div style="font-weight: 700; color: var(--secondary); margin-bottom: 0.5rem;">${ex.name}</div>
                     <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.5rem;">${ex.muscle} • ${ex.sets}×${ex.reps}</div>
                     ${setsHtml}
                 `;
@@ -1268,7 +1304,7 @@
             if (routine) {
                 container.innerHTML = `
                     <div class="exercise-card">
-                        <div style="font-weight: 700; font-size: 1.1rem;">${routine.name}</div>
+                        <div style="font-weight: 700; font-size: 1.1rem; color: var(--text);">${routine.name}</div>
                         <div style="color: var(--text-muted); margin: 0.5rem 0;">${routine.exercises.length} ejercicios</div>
                         <button class="btn btn-primary btn-full" onclick='startWorkoutById("${routine.id}")'>Comenzar</button>
                     </div>
@@ -1301,9 +1337,9 @@
                 const vol = volumes[m] || 0;
                 return `
                     <div class="muscle-item">
-                        <span style="text-transform: capitalize;">${m}</span>
+                        <span style="text-transform: capitalize; color: var(--text);">${m}</span>
                         <div style="display: flex; align-items: center; gap: 0.5rem;">
-                            <span style="font-size: 0.8rem; color: var(--text-muted);">${(vol/1000).toFixed(1)}k</span>
+                            <span style="font-size: 0.8rem; color: var(--secondary); font-weight: 600;">${(vol/1000).toFixed(1)}k</span>
                             <div class="muscle-bar">
                                 <div class="muscle-fill" style="width: ${(vol/maxVol)*100}%"></div>
                             </div>
@@ -1331,12 +1367,12 @@
                     <div class="exercise-card">
                         <div class="exercise-header">
                             <div>
-                                <div style="font-weight: 700;">${r.name}</div>
-                                <div style="font-size: 0.8rem; color: var(--text-muted);">${days}</div>
+                                <div style="font-weight: 700; color: var(--text);">${r.name}</div>
+                                <div style="font-size: 0.8rem; color: var(--secondary);">${days}</div>
                             </div>
                             <button class="btn btn-danger" onclick="deleteRoutine('${r.id}')" style="padding: 0.5rem;">🗑️</button>
                         </div>
-                        <div style="margin-top: 0.5rem;">${r.exercises?.length || 0} ejercicios</div>
+                        <div style="margin-top: 0.5rem; color: var(--text-muted);">${r.exercises?.length || 0} ejercicios</div>
                     </div>
                 `;
             }).join('');
@@ -1351,7 +1387,7 @@
             document.getElementById('exercisesList').innerHTML = filtered.map(e => `
                 <div class="exercise-card">
                     <div class="exercise-header">
-                        <div style="font-weight: 700;">${e.name}</div>
+                        <div style="font-weight: 700; color: var(--text);">${e.name}</div>
                         <span class="exercise-muscle">${e.muscle}</span>
                     </div>
                 </div>
@@ -1395,13 +1431,13 @@
                 <div class="exercise-card">
                     <div style="display: flex; justify-content: space-between; align-items: center;">
                         <div>
-                            <div style="font-weight: 700;">${w.routineName}</div>
+                            <div style="font-weight: 700; color: var(--text);">${w.routineName}</div>
                             <div style="font-size: 0.8rem; color: var(--text-muted);">
                                 ${new Date(w.startTime).toLocaleDateString()} • ${w.duration || '?'} min
                             </div>
                         </div>
                         <div style="text-align: right;">
-                            <div style="font-weight: 700; color: var(--success);">${(w.totalVolume || 0).toLocaleString()} kg</div>
+                            <div style="font-weight: 700; color: var(--secondary);">${(w.totalVolume || 0).toLocaleString()} kg</div>
                         </div>
                     </div>
                 </div>
@@ -1432,6 +1468,7 @@
         }
 
         window.startWorkout = startWorkout;
+        window.showToast = showToast;
     </script>
 </body>
 </html>
