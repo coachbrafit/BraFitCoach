@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> BraFit - Coach </title>
+    <title> BraFit Coach </title>
     <style>
         * {
             margin: 0;
@@ -964,6 +964,8 @@
                 document.getElementById('authForm').classList.add('hidden');
                 document.getElementById('authLoading').classList.remove('hidden');
                 await signInWithEmailAndPassword(auth, email, password);
+
+                document.getElementById("user-email").textContent = email;
             } catch (error) {
                 showToast('❌ ' + error.message, true);
                 document.getElementById('authForm').classList.remove('hidden');
