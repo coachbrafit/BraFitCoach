@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IronSystem - Tu Rutina Inteligente</title>
+    <title>BraFitCoach</title>
     <style>
         * {
             margin: 0;
@@ -84,29 +84,7 @@
             cursor: not-allowed;
         }
 
-        .debug-info {
-            background: rgba(0,0,0,0.5);
-            border: 1px solid var(--primary);
-            border-radius: 8px;
-            padding: 1rem;
-            margin-top: 1rem;
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            max-height: 200px;
-            overflow-y: auto;
-        }
-
-        .debug-info.error {
-            border-color: #d63031;
-            color: #d63031;
-        }
-
-        .debug-info.success {
-            border-color: #00b894;
-            color: #00b894;
-        }
-
-        /* Header - CORREGIDO */
+        /* Header */
         .header {
             background: rgba(26, 26, 46, 0.95);
             backdrop-filter: blur(10px);
@@ -145,14 +123,6 @@
             flex-wrap: wrap;
         }
 
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-size: 0.85rem;
-            color: var(--text-muted);
-        }
-
         .sync-badge {
             display: flex;
             align-items: center;
@@ -169,6 +139,11 @@
         .sync-badge.offline {
             background: rgba(255, 107, 53, 0.2);
             color: var(--primary);
+        }
+
+        .sync-badge.loading {
+            background: rgba(255, 193, 7, 0.2);
+            color: #ffc107;
         }
 
         .logout-btn {
@@ -591,10 +566,10 @@
     <!-- Auth Container -->
     <div id="authContainer" class="auth-container">
         <div class="auth-box">
-            <h2 class="auth-title">💪 IronSystem</h2>
+            <h2 class="auth-title">💪 BraFit System</h2>
             <div id="authForm">
-                <input type="email" id="authEmail" class="auth-input" placeholder="Email" value="test@test.com">
-                <input type="password" id="authPassword" class="auth-input" placeholder="Contraseña" value="123456">
+                <input type="email" id="authEmail" class="auth-input" placeholder="Email" value="">
+                <input type="password" id="authPassword" class="auth-input" placeholder="Contraseña" value="">
                 <button class="auth-btn" onclick="handleAuth()">Iniciar Sesión</button>
                 <button class="auth-btn" style="background: rgba(255,255,255,0.1);" onclick="handleRegister()">Crear Cuenta</button>
             </div>
@@ -602,22 +577,19 @@
                 <div class="spinner"></div>
                 <p style="margin-top: 1rem; color: var(--text-muted);">Conectando...</p>
             </div>
-            <div id="debugConsole" class="debug-info hidden">
-                <strong>Estado:</strong> <span id="debugStatus">Esperando...</span>
-            </div>
         </div>
     </div>
 
     <!-- Main App -->
     <div id="appContainer" class="hidden">
-        <!-- Header CORREGIDO -->
+        <!-- Header -->
         <header class="header">
             <div class="header-content">
                 <h1>💪 IronSystem</h1>
                 <div class="header-actions">
-                    <div class="sync-badge" id="syncBadge">
+                    <div class="sync-badge loading" id="syncBadge">
                         <span>●</span>
-                        <span id="syncText">Conectado</span>
+                        <span id="syncText">Cargando...</span>
                     </div>
                     <button class="logout-btn" onclick="logout()">Salir</button>
                 </div>
@@ -662,14 +634,16 @@
                 <div id="todayWorkout">
                     <div class="empty-state">
                         <div style="font-size: 3rem; margin-bottom: 1rem;">📋</div>
-                        <p>No hay entrenamiento programado</p>
+                        <p>Cargando...</p>
                     </div>
                 </div>
             </div>
 
             <div class="card">
                 <div class="card-title">🔥 Volumen Semanal</div>
-                <div class="muscle-map" id="muscleVolume"></div>
+                <div class="muscle-map" id="muscleVolume">
+                    <div class="muscle-item"><span>Cargando...</span></div>
+                </div>
             </div>
         </section>
 
@@ -680,7 +654,9 @@
                     <div class="card-title" style="margin: 0;">🗂️ Mis Rutinas</div>
                     <button class="btn btn-primary" onclick="openModal('routineModal')">+ Crear</button>
                 </div>
-                <div id="routinesList"></div>
+                <div id="routinesList">
+                    <p style="text-align: center; color: var(--text-muted);">Cargando rutinas...</p>
+                </div>
             </div>
         </section>
 
@@ -703,7 +679,9 @@
                     <button class="btn btn-primary" onclick="openModal('exerciseModal')">+ Agregar</button>
                 </div>
                 <input type="text" id="exerciseSearch" placeholder="🔍 Buscar..." style="width: 100%; margin-bottom: 1rem; padding: 0.875rem; border-radius: 12px; border: 2px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.3); color: white;" onkeyup="filterExercises()">
-                <div id="exercisesList"></div>
+                <div id="exercisesList">
+                    <p style="text-align: center; color: var(--text-muted);">Cargando ejercicios...</p>
+                </div>
             </div>
         </section>
 
@@ -729,7 +707,9 @@
             </div>
             <div class="card">
                 <div class="card-title">📅 Historial</div>
-                <div id="workoutHistory"></div>
+                <div id="workoutHistory">
+                    <p style="text-align: center; color: var(--text-muted);">Cargando historial...</p>
+                </div>
             </div>
         </section>
     </div>
@@ -842,8 +822,7 @@
             where,
             doc,
             deleteDoc,
-            serverTimestamp,
-            orderBy
+            serverTimestamp
         } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
         const firebaseConfig = {
@@ -872,19 +851,23 @@
             currentWorkout: null
         };
 
-        function logDebug(message, isError = false) {
-            console.log(`[IronSystem] ${message}`);
-        }
-
+        // Auth State - CORREGIDO: Esperar a que Firebase esté listo
         onAuthStateChanged(auth, async (user) => {
             if (user) {
                 userId = user.uid;
+                console.log('✅ Usuario autenticado:', userId);
+                
+                // Mostrar app
                 document.getElementById('authContainer').classList.add('hidden');
                 document.getElementById('appContainer').classList.remove('hidden');
-                await loadUserData();
-                renderAll();
+                
+                // Cargar datos con retraso para asegurar conexión
+                setTimeout(async () => {
+                    await loadUserData();
+                }, 500);
             } else {
                 userId = null;
+                console.log('❌ Sin usuario');
                 document.getElementById('authContainer').classList.remove('hidden');
                 document.getElementById('appContainer').classList.add('hidden');
             }
@@ -898,7 +881,6 @@
                 document.getElementById('authForm').classList.add('hidden');
                 document.getElementById('authLoading').classList.remove('hidden');
                 await signInWithEmailAndPassword(auth, email, password);
-                showToast('✅ Sesión iniciada');
             } catch (error) {
                 showToast('❌ ' + error.message, true);
                 document.getElementById('authForm').classList.remove('hidden');
@@ -914,7 +896,6 @@
                 document.getElementById('authForm').classList.add('hidden');
                 document.getElementById('authLoading').classList.remove('hidden');
                 await createUserWithEmailAndPassword(auth, email, password);
-                showToast('✅ Cuenta creada');
             } catch (error) {
                 showToast('❌ ' + error.message, true);
                 document.getElementById('authForm').classList.remove('hidden');
@@ -923,41 +904,87 @@
         };
 
         window.logout = async () => {
-            try {
-                await signOut(auth);
-                showToast('👋 Sesión cerrada');
-            } catch (error) {
-                showToast('❌ Error al cerrar sesión', true);
-            }
+            await signOut(auth);
+            showToast('👋 Sesión cerrada');
         };
 
+        // CORREGIDO: Función de carga con mejor manejo de errores
         async function loadUserData() {
-            if (!userId) return;
+            if (!userId) {
+                console.error('No hay userId');
+                updateSyncStatus(false, 'Error');
+                return;
+            }
+            
+            updateSyncStatus(true, 'Cargando...');
             
             try {
-                const exercisesQuery = query(collection(db, 'exercises'), where('userId', '==', userId));
-                const exercisesSnap = await getDocs(exercisesQuery);
-                const userExercises = exercisesSnap.docs.map(d => ({ id: d.id, ...d.data() }));
-                data.exercises = [...data.exercises.filter(e => e.isDefault), ...userExercises];
+                console.log('📥 Cargando datos...');
+                
+                // 1. Cargar ejercicios (sin orderBy para evitar índices)
+                try {
+                    const exercisesQuery = query(
+                        collection(db, 'exercises'), 
+                        where('userId', '==', userId)
+                    );
+                    const exercisesSnap = await getDocs(exercisesQuery);
+                    const userExercises = exercisesSnap.docs.map(d => ({ 
+                        id: d.id, 
+                        ...d.data() 
+                    }));
+                    data.exercises = [...data.exercises.filter(e => e.isDefault), ...userExercises];
+                    console.log('✅ Ejercicios cargados:', userExercises.length);
+                } catch (e) {
+                    console.error('Error ejercicios:', e);
+                }
 
-                const routinesQuery = query(collection(db, 'routines'), where('userId', '==', userId));
-                const routinesSnap = await getDocs(routinesQuery);
-                data.routines = routinesSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+                // 2. Cargar rutinas
+                try {
+                    const routinesQuery = query(
+                        collection(db, 'routines'),
+                        where('userId', '==', userId)
+                    );
+                    const routinesSnap = await getDocs(routinesQuery);
+                    data.routines = routinesSnap.docs.map(d => ({ 
+                        id: d.id, 
+                        ...d.data() 
+                    }));
+                    console.log('✅ Rutinas cargadas:', data.routines.length);
+                } catch (e) {
+                    console.error('Error rutinas:', e);
+                }
 
-                const workoutsQuery = query(collection(db, 'workouts'), where('userId', '==', userId), orderBy('startTime', 'desc'));
-                const workoutsSnap = await getDocs(workoutsQuery);
-                data.workouts = workoutsSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+                // 3. Cargar workouts (sin orderBy para evitar error de índice)
+                try {
+                    const workoutsQuery = query(
+                        collection(db, 'workouts'),
+                        where('userId', '==', userId)
+                    );
+                    const workoutsSnap = await getDocs(workoutsQuery);
+                    data.workouts = workoutsSnap.docs
+                        .map(d => ({ id: d.id, ...d.data() }))
+                        .sort((a, b) => new Date(b.startTime) - new Date(a.startTime)); // Ordenar en cliente
+                    console.log('✅ Workouts cargados:', data.workouts.length);
+                } catch (e) {
+                    console.error('Error workouts:', e);
+                }
 
-                updateSyncStatus(true);
+                updateSyncStatus(true, 'Conectado');
+                renderAll();
+                showToast('✅ Datos cargados');
+                
             } catch (error) {
-                console.error('Error cargando:', error);
+                console.error('Error general:', error);
+                updateSyncStatus(false, 'Error');
                 showToast('❌ Error cargando datos', true);
-                updateSyncStatus(false);
             }
         }
 
         async function saveToFirebase(collectionName, item) {
-            if (!userId) return null;
+            if (!userId) {
+                showToast('❌ No autenticado', true);
+                return null;
+            }
             
             try {
                 const docRef = await addDoc(collection(db, collectionName), {
@@ -966,12 +993,12 @@
                     createdAt: serverTimestamp(),
                     updatedAt: serverTimestamp()
                 });
-                updateSyncStatus(true);
+                updateSyncStatus(true, 'Conectado');
                 return docRef.id;
             } catch (error) {
                 console.error('Error guardando:', error);
                 showToast('❌ Error guardando: ' + error.message, true);
-                updateSyncStatus(false);
+                updateSyncStatus(false, 'Error');
                 return null;
             }
         }
@@ -987,6 +1014,7 @@
             }
         }
 
+        // UI Functions
         window.showSection = (sectionId) => {
             document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
             document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
@@ -1291,7 +1319,7 @@
         function renderRoutines() {
             const container = document.getElementById('routinesList');
             if (data.routines.length === 0) {
-                container.innerHTML = '<p style="text-align: center; color: var(--text-muted);">No hay rutinas</p>';
+                container.innerHTML = '<p style="text-align: center; color: var(--text-muted);">No hay rutinas creadas</p>';
                 return;
             }
             
@@ -1394,11 +1422,11 @@
             setTimeout(() => toast.classList.remove('show'), 3000);
         }
 
-        function updateSyncStatus(online) {
+        function updateSyncStatus(online, text) {
             const badge = document.getElementById('syncBadge');
             const txt = document.getElementById('syncText');
-            badge.className = 'sync-badge ' + (online ? '' : 'offline');
-            txt.textContent = online ? 'Conectado' : 'Sin conexión';
+            badge.className = 'sync-badge ' + (online ? '' : 'offline') + (text === 'Cargando...' ? ' loading' : '');
+            txt.textContent = text || (online ? 'Conectado' : 'Sin conexión');
         }
 
         window.startWorkout = startWorkout;
