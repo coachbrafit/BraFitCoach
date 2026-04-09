@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> BraFit  Coach </title>
+    <title> BraFit - Coach </title>
     <style>
         * {
             margin: 0;
@@ -381,9 +381,14 @@
             margin-top: 1rem;
         }
         /* Solo desde tablet en adelante cambia */
-        @media (min-width: 768px) {
+        @media (max-width: 768px) {
             .muscle-map {
-                grid-template-columns: repeat(2, 1fr);
+                display: flex !important;
+                flex-direction: column !important;
+            }
+        
+            .muscle-item {
+                width: 100% !important;
             }
         }
         /* Desktop */
