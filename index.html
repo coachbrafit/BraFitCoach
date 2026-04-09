@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> BraFit - Coach </title>
+    <title> BraFit  Coach </title>
     <style>
         * {
             margin: 0;
@@ -376,26 +376,23 @@
 
         .muscle-map {
             display: grid;
-            grid-template-columns: 1fr; /* 🔥 móvil primero */
+            grid-template-columns: 1fr; /* 📱 móvil SIEMPRE 1 columna */
             gap: 0.75rem;
             margin-top: 1rem;
         }
-        
-        /* Tablet */
+        /* Solo desde tablet en adelante cambia */
         @media (min-width: 768px) {
             .muscle-map {
                 grid-template-columns: repeat(2, 1fr);
             }
         }
-        
         /* Desktop */
         @media (min-width: 1024px) {
             .muscle-map {
                 grid-template-columns: repeat(3, 1fr);
             }
         }
-       
-
+        
         .action-btn {
             padding: 1.25rem;
             border-radius: 16px;
