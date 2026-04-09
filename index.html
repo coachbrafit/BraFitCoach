@@ -374,11 +374,17 @@
             margin-bottom: 1.5rem;
         }
 
-        @media (min-width: 768px) {
-            .quick-actions {
-                grid-template-columns: repeat(4, 1fr);
+        @media (max-width: 768px) {
+            .muscle-map {
+                grid-template-columns: 1fr;
+                gap: 0.5rem;
+            }
+        
+            .muscle-item {
+                padding: 0.85rem;
             }
         }
+       
 
         .action-btn {
             padding: 1.25rem;
