@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BraFitCoach</title>
+    <title>IronSystem - Tu Rutina Inteligente</title>
     <style>
         * {
             margin: 0;
@@ -566,10 +566,10 @@
     <!-- Auth Container -->
     <div id="authContainer" class="auth-container">
         <div class="auth-box">
-            <h2 class="auth-title">💪 BraFit System</h2>
+            <h2 class="auth-title">💪 IronSystem</h2>
             <div id="authForm">
-                <input type="email" id="authEmail" class="auth-input" placeholder="Email" value="">
-                <input type="password" id="authPassword" class="auth-input" placeholder="Contraseña" value="">
+                <input type="email" id="authEmail" class="auth-input" placeholder="Email" value="test@test.com">
+                <input type="password" id="authPassword" class="auth-input" placeholder="Contraseña" value="123456">
                 <button class="auth-btn" onclick="handleAuth()">Iniciar Sesión</button>
                 <button class="auth-btn" style="background: rgba(255,255,255,0.1);" onclick="handleRegister()">Crear Cuenta</button>
             </div>
@@ -851,25 +851,45 @@
             currentWorkout: null
         };
 
-        // Auth State - CORREGIDO: Esperar a que Firebase esté listo
+        // Auth State - CORREGIDO
         onAuthStateChanged(auth, async (user) => {
+            console.log('Auth state changed:', user ? 'LOGGED IN' : 'LOGGED OUT');
+            
             if (user) {
+                // USUARIO LOGUEADO
                 userId = user.uid;
-                console.log('✅ Usuario autenticado:', userId);
                 
-                // Mostrar app
+                // Mostrar app, ocultar auth
                 document.getElementById('authContainer').classList.add('hidden');
                 document.getElementById('appContainer').classList.remove('hidden');
                 
-                // Cargar datos con retraso para asegurar conexión
+                // Resetear estado de carga
+                document.getElementById('authLoading').classList.add('hidden');
+                document.getElementById('authForm').classList.remove('hidden');
+                
+                // Cargar datos
                 setTimeout(async () => {
                     await loadUserData();
-                }, 500);
+                }, 300);
+                
             } else {
+                // USUARIO NO LOGUEADO (logout)
                 userId = null;
-                console.log('❌ Sin usuario');
-                document.getElementById('authContainer').classList.remove('hidden');
+                
+                // IMPORTANTE: Resetear datos
+                data.routines = [];
+                data.workouts = [];
+                data.exercises = data.exercises.filter(e => e.isDefault);
+                
+                // Ocultar app, mostrar auth
                 document.getElementById('appContainer').classList.add('hidden');
+                document.getElementById('authContainer').classList.remove('hidden');
+                
+                // IMPORTANTE: Resetear formulario de auth
+                document.getElementById('authLoading').classList.add('hidden');
+                document.getElementById('authForm').classList.remove('hidden');
+                
+                console.log('Logout completado, formulario reseteado');
             }
         });
 
@@ -904,67 +924,49 @@
         };
 
         window.logout = async () => {
-            await signOut(auth);
-            showToast('👋 Sesión cerrada');
+            try {
+                // Cerrar sesión en Firebase
+                await signOut(auth);
+                showToast('👋 Sesión cerrada');
+                // El resto lo maneja onAuthStateChanged
+            } catch (error) {
+                console.error('Error en logout:', error);
+                showToast('❌ Error al cerrar sesión', true);
+            }
         };
 
-        // CORREGIDO: Función de carga con mejor manejo de errores
         async function loadUserData() {
-            if (!userId) {
-                console.error('No hay userId');
-                updateSyncStatus(false, 'Error');
-                return;
-            }
+            if (!userId) return;
             
             updateSyncStatus(true, 'Cargando...');
             
             try {
-                console.log('📥 Cargando datos...');
-                
-                // 1. Cargar ejercicios (sin orderBy para evitar índices)
+                // Cargar ejercicios
                 try {
-                    const exercisesQuery = query(
-                        collection(db, 'exercises'), 
-                        where('userId', '==', userId)
-                    );
+                    const exercisesQuery = query(collection(db, 'exercises'), where('userId', '==', userId));
                     const exercisesSnap = await getDocs(exercisesQuery);
-                    const userExercises = exercisesSnap.docs.map(d => ({ 
-                        id: d.id, 
-                        ...d.data() 
-                    }));
+                    const userExercises = exercisesSnap.docs.map(d => ({ id: d.id, ...d.data() }));
                     data.exercises = [...data.exercises.filter(e => e.isDefault), ...userExercises];
-                    console.log('✅ Ejercicios cargados:', userExercises.length);
                 } catch (e) {
                     console.error('Error ejercicios:', e);
                 }
 
-                // 2. Cargar rutinas
+                // Cargar rutinas
                 try {
-                    const routinesQuery = query(
-                        collection(db, 'routines'),
-                        where('userId', '==', userId)
-                    );
+                    const routinesQuery = query(collection(db, 'routines'), where('userId', '==', userId));
                     const routinesSnap = await getDocs(routinesQuery);
-                    data.routines = routinesSnap.docs.map(d => ({ 
-                        id: d.id, 
-                        ...d.data() 
-                    }));
-                    console.log('✅ Rutinas cargadas:', data.routines.length);
+                    data.routines = routinesSnap.docs.map(d => ({ id: d.id, ...d.data() }));
                 } catch (e) {
                     console.error('Error rutinas:', e);
                 }
 
-                // 3. Cargar workouts (sin orderBy para evitar error de índice)
+                // Cargar workouts
                 try {
-                    const workoutsQuery = query(
-                        collection(db, 'workouts'),
-                        where('userId', '==', userId)
-                    );
+                    const workoutsQuery = query(collection(db, 'workouts'), where('userId', '==', userId));
                     const workoutsSnap = await getDocs(workoutsQuery);
                     data.workouts = workoutsSnap.docs
                         .map(d => ({ id: d.id, ...d.data() }))
-                        .sort((a, b) => new Date(b.startTime) - new Date(a.startTime)); // Ordenar en cliente
-                    console.log('✅ Workouts cargados:', data.workouts.length);
+                        .sort((a, b) => new Date(b.startTime) - new Date(a.startTime));
                 } catch (e) {
                     console.error('Error workouts:', e);
                 }
