@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> BraFit Coach </title>
+    <title> BraFitCoach </title>
     <style>
         * {
             margin: 0;
@@ -1175,9 +1175,7 @@
             where,
             doc,
             deleteDoc,
-            serverTimestamp,
-            getDoc,
-            updateDoc
+            serverTimestamp
         } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
         import { 
             getStorage, 
@@ -1191,13 +1189,13 @@
             apiKey: "AIzaSyB2nAwk1IlirsX7cpERSCgs-Jj9_Q_2LHM",
             authDomain: "brafitcoach.firebaseapp.com",
             projectId: "brafitcoach",
-            storageBucket: "brafitcoach.firebasestorage.app"// IMPORTANTE: Storage bucket
+            storageBucket: "brafitcoach.appspot.com"
         };
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
-        const storage = getStorage(app); // Inicializar Storage
+        const storage = getStorage(app);
 
         let userId = null;
         let selectedImageFile = null;
@@ -1286,46 +1284,25 @@
             currentWorkout: null
         };
 
-        onAuthStateChanged(auth, async (user) => {
-            console.log('Auth state changed:', user ? 'LOGGED IN' : 'LOGGED OUT');
-            
-            if (user) {
-                userId = user.uid;
-                document.getElementById('authContainer').classList.add('hidden');
-                document.getElementById('appContainer').classList.remove('hidden');
-                document.getElementById('authLoading').classList.add('hidden');
-                document.getElementById('authForm').classList.remove('hidden');
-                
-                setTimeout(async () => {
-                    await loadUserData();
-                }, 300);
-                
-            } else {
-                userId = null;
-                data.routines = [];
-                data.workouts = [];
-                data.exercises = data.exercises.filter(e => e.isDefault);
-                
-                document.getElementById('appContainer').classList.add('hidden');
-                document.getElementById('authContainer').classList.remove('hidden');
-                document.getElementById('authLoading').classList.add('hidden');
-                document.getElementById('authForm').classList.remove('hidden');
-                
-                console.log('Logout completado, formulario reseteado');
-            }
-        });
+        // ============== FUNCIONES GLOBALES ==============
+        // Todas las funciones llamadas desde HTML deben estar en window
 
         window.handleAuth = async () => {
             const email = document.getElementById('authEmail').value;
             const password = document.getElementById('authPassword').value;
             
+            if (!email || !password) {
+                showToast('❌ Ingresa email y contraseña', true);
+                return;
+            }
+            
             try {
                 document.getElementById('authForm').classList.add('hidden');
                 document.getElementById('authLoading').classList.remove('hidden');
                 await signInWithEmailAndPassword(auth, email, password);
-
                 document.getElementById("user-email").textContent = email;
             } catch (error) {
+                console.error('Error login:', error);
                 showToast('❌ ' + error.message, true);
                 document.getElementById('authForm').classList.remove('hidden');
                 document.getElementById('authLoading').classList.add('hidden');
@@ -1336,11 +1313,23 @@
             const email = document.getElementById('authEmail').value;
             const password = document.getElementById('authPassword').value;
             
+            if (!email || !password) {
+                showToast('❌ Ingresa email y contraseña', true);
+                return;
+            }
+            
+            if (password.length < 6) {
+                showToast('❌ La contraseña debe tener al menos 6 caracteres', true);
+                return;
+            }
+            
             try {
                 document.getElementById('authForm').classList.add('hidden');
                 document.getElementById('authLoading').classList.remove('hidden');
                 await createUserWithEmailAndPassword(auth, email, password);
+                document.getElementById("user-email").textContent = email;
             } catch (error) {
+                console.error('Error registro:', error);
                 showToast('❌ ' + error.message, true);
                 document.getElementById('authForm').classList.remove('hidden');
                 document.getElementById('authLoading').classList.add('hidden');
@@ -1357,144 +1346,24 @@
             }
         };
 
-        async function loadUserData() {
-            if (!userId) return;
-            
-            updateSyncStatus(true, 'Cargando...');
-            
-            try {
-                try {
-                    const exercisesQuery = query(collection(db, 'exercises'), where('userId', '==', userId));
-                    const exercisesSnap = await getDocs(exercisesQuery);
-                    const userExercises = exercisesSnap.docs.map(d => ({ id: d.id, ...d.data() }));
-                    data.exercises = [...data.exercises.filter(e => e.isDefault), ...userExercises];
-                } catch (e) {
-                    console.error('Error ejercicios:', e);
-                }
-
-                try {
-                    const routinesQuery = query(collection(db, 'routines'), where('userId', '==', userId));
-                    const routinesSnap = await getDocs(routinesQuery);
-                    data.routines = routinesSnap.docs.map(d => ({ id: d.id, ...d.data() }));
-                } catch (e) {
-                    console.error('Error rutinas:', e);
-                }
-
-                try {
-                    const workoutsQuery = query(collection(db, 'workouts'), where('userId', '==', userId));
-                    const workoutsSnap = await getDocs(workoutsQuery);
-                    data.workouts = workoutsSnap.docs
-                        .map(d => ({ id: d.id, ...d.data() }))
-                        .sort((a, b) => new Date(b.startTime) - new Date(a.startTime));
-                } catch (e) {
-                    console.error('Error workouts:', e);
-                }
-
-                updateSyncStatus(true, 'Conectado');
-                renderAll();
-                showToast('✅ Datos cargados');
-                
-            } catch (error) {
-                console.error('Error general:', error);
-                updateSyncStatus(false, 'Error');
-                showToast('❌ Error cargando datos', true);
-            }
-        }
-
-        async function saveToFirebase(collectionName, item) {
-            if (!userId) {
-                showToast('❌ No autenticado', true);
-                return null;
-            }
-            
-            try {
-                const docRef = await addDoc(collection(db, collectionName), {
-                    ...item,
-                    userId: userId,
-                    createdAt: serverTimestamp(),
-                    updatedAt: serverTimestamp()
-                });
-                updateSyncStatus(true, 'Conectado');
-                return docRef.id;
-            } catch (error) {
-                console.error('Error guardando:', error);
-                showToast('❌ Error guardando: ' + error.message, true);
-                updateSyncStatus(false, 'Error');
-                return null;
-            }
-        }
-
-        async function deleteFromFirebase(collectionName, docId) {
-            if (!userId) return false;
-            try {
-                await deleteDoc(doc(db, collectionName, docId));
-                return true;
-            } catch (error) {
-                console.error('Error eliminando:', error);
-                return false;
-            }
-        }
-
-        // NUEVAS FUNCIONES PARA MANEJO DE IMÁGENES
-        window.handleImageSelect = (event) => {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            // Validar tamaño (2MB máximo para plan gratuito)
-            if (file.size > 2 * 1024 * 1024) {
-                showToast('❌ La imagen debe ser menor a 2MB', true);
-                return;
-            }
-
-            // Validar tipo
-            if (!file.type.startsWith('image/')) {
-                showToast('❌ El archivo debe ser una imagen', true);
-                return;
-            }
-
-            selectedImageFile = file;
-
-            // Mostrar preview
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                const container = document.getElementById('imageUploadContainer');
-                const content = document.getElementById('imageUploadContent');
-                
-                container.classList.add('has-image');
-                content.innerHTML = `
-                    <img src="${e.target.result}" class="image-upload-preview" alt="Preview">
-                    <div class="image-upload-text" style="color: var(--secondary);">✓ Imagen seleccionada</div>
-                    <div class="image-upload-hint">Haz clic para cambiar</div>
-                `;
-            };
-            reader.readAsDataURL(file);
-        };
-
-        async function uploadExerciseImage(file) {
-            if (!file || !userId) return null;
-
-            const fileName = `exercises/${userId}/${Date.now()}_${file.name}`;
-            const storageRef = ref(storage, fileName);
-
-            try {
-                showToast('📤 Subiendo imagen...');
-                const snapshot = await uploadBytes(storageRef, file);
-                const downloadURL = await getDownloadURL(snapshot.ref);
-                showToast('✅ Imagen subida');
-                return downloadURL;
-            } catch (error) {
-                console.error('Error subiendo imagen:', error);
-                showToast('❌ Error subiendo imagen: ' + error.message, true);
-                return null;
-            }
-        }
-
         window.showSection = (sectionId) => {
             document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
             document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
             
             document.getElementById(sectionId).classList.add('active');
-            if (event && event.target) event.target.classList.add('active');
+            
+            // Actualizar tab activo
+            const tabs = document.querySelectorAll('.nav-tab');
+            const sectionMap = {
+                'dashboard': 0,
+                'routines': 1,
+                'workout': 2,
+                'exercises': 3,
+                'progress': 4
+            };
+            if (tabs[sectionMap[sectionId]]) {
+                tabs[sectionMap[sectionId]].classList.add('active');
+            }
             
             if (sectionId === 'dashboard') renderDashboard();
             if (sectionId === 'routines') renderRoutines();
@@ -1518,23 +1387,36 @@
             document.getElementById(modalId).classList.remove('active');
         };
 
-        function resetExerciseForm() {
-            selectedImageFile = null;
-            document.getElementById('exerciseName').value = '';
-            document.getElementById('muscleGroup').value = 'pecho';
-            document.getElementById('exerciseDifficulty').value = 'intermedio';
-            document.getElementById('exerciseDescription').value = '';
-            document.getElementById('exerciseEquipment').value = '';
-            
-            const container = document.getElementById('imageUploadContainer');
-            const content = document.getElementById('imageUploadContent');
-            container.classList.remove('has-image');
-            content.innerHTML = `
-                <div style="font-size: 3rem; margin-bottom: 0.5rem;">📷</div>
-                <div class="image-upload-text">Haz clic para subir una imagen</div>
-                <div class="image-upload-hint">JPG, PNG o GIF (máx. 2MB)</div>
-            `;
-        }
+        window.handleImageSelect = (event) => {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            if (file.size > 2 * 1024 * 1024) {
+                showToast('❌ La imagen debe ser menor a 2MB', true);
+                return;
+            }
+
+            if (!file.type.startsWith('image/')) {
+                showToast('❌ El archivo debe ser una imagen', true);
+                return;
+            }
+
+            selectedImageFile = file;
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const container = document.getElementById('imageUploadContainer');
+                const content = document.getElementById('imageUploadContent');
+                
+                container.classList.add('has-image');
+                content.innerHTML = `
+                    <img src="${e.target.result}" class="image-upload-preview" alt="Preview">
+                    <div class="image-upload-text" style="color: var(--secondary);">✓ Imagen seleccionada</div>
+                    <div class="image-upload-hint">Haz clic para cambiar</div>
+                `;
+            };
+            reader.readAsDataURL(file);
+        };
 
         window.addRoutineExercise = () => {
             const container = document.getElementById('routineExercises');
@@ -1593,7 +1475,6 @@
             }
         };
 
-        // FUNCIÓN MEJORADA PARA GUARDAR EJERCICIOS CON IMAGEN
         window.saveExercise = async () => {
             const name = document.getElementById('exerciseName').value.trim();
             const muscle = document.getElementById('muscleGroup').value;
@@ -1614,7 +1495,6 @@
             btn.textContent = 'Guardando...';
             
             try {
-                // Subir imagen si existe
                 let imageUrl = '';
                 if (selectedImageFile) {
                     imageUrl = await uploadExerciseImage(selectedImageFile);
@@ -1655,7 +1535,6 @@
             const exercise = data.exercises.find(e => e.id === id);
             if (!exercise) return;
             
-            // Si tiene imagen, eliminarla de Storage
             if (exercise.imageUrl && !exercise.isDefault) {
                 try {
                     const imageRef = ref(storage, exercise.imageUrl);
@@ -1691,54 +1570,6 @@
             const routine = data.routines.find(r => r.id === id);
             if (routine) startWorkout(routine);
         };
-
-        function startWorkout(routine) {
-            data.currentWorkout = {
-                routineId: routine.id,
-                routineName: routine.name,
-                startTime: new Date().toISOString(),
-                exercises: routine.exercises.map(ex => ({
-                    ...ex,
-                    setsCompleted: Array(ex.sets).fill(null).map((_, i) => ({
-                        setNumber: i + 1,
-                        weight: '',
-                        reps: '',
-                        completed: false
-                    }))
-                })),
-                totalVolume: 0
-            };
-            
-            document.getElementById('activeWorkoutTitle').textContent = `🔥 ${routine.name}`;
-            renderActiveWorkout();
-            openModal('activeWorkoutModal');
-        }
-
-        function renderActiveWorkout() {
-            const container = document.getElementById('activeExercises');
-            container.innerHTML = '';
-            
-            data.currentWorkout.exercises.forEach((ex, i) => {
-                const div = document.createElement('div');
-                div.className = 'session-exercise';
-                
-                let setsHtml = ex.setsCompleted.map((set, j) => `
-                    <div class="set-row">
-                        <span style="color: var(--secondary); font-weight: 700;">${set.setNumber}</span>
-                        <input type="number" placeholder="kg" value="${set.weight}" onchange="updateSet(${i}, ${j}, 'weight', this.value)" style="padding: 0.5rem; border-radius: 8px; border: 2px solid rgba(201, 169, 98, 0.2); background: rgba(0,0,0,0.3); color: white;">
-                        <input type="number" placeholder="reps" value="${set.reps}" onchange="updateSet(${i}, ${j}, 'reps', this.value)" style="padding: 0.5rem; border-radius: 8px; border: 2px solid rgba(201, 169, 98, 0.2); background: rgba(0,0,0,0.3); color: white;">
-                        <input type="checkbox" ${set.completed ? 'checked' : ''} onchange="toggleSet(${i}, ${j}, this.checked)" style="width: 24px; height: 24px; accent-color: var(--secondary);">
-                    </div>
-                `).join('');
-                
-                div.innerHTML = `
-                    <div style="font-weight: 700; color: var(--secondary); margin-bottom: 0.5rem;">${ex.name}</div>
-                    <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.5rem;">${ex.muscle} • ${ex.sets}×${ex.reps}</div>
-                    ${setsHtml}
-                `;
-                container.appendChild(div);
-            });
-        }
 
         window.updateSet = (exIdx, setIdx, field, value) => {
             data.currentWorkout.exercises[exIdx].setsCompleted[setIdx][field] = value;
@@ -1802,6 +1633,246 @@
             document.getElementById('restTimer').textContent = '00:00';
         };
 
+        window.filterExercises = () => renderExercises();
+
+        window.showExerciseDetail = (id) => {
+            const exercise = data.exercises.find(e => e.id === id);
+            if (!exercise) return;
+            
+            const modal = document.getElementById('exerciseDetailModal');
+            const content = document.getElementById('exerciseDetailContent');
+            const nameEl = document.getElementById('detailExerciseName');
+            
+            nameEl.textContent = exercise.name;
+            
+            const imageHtml = exercise.imageUrl 
+                ? `<img src="${exercise.imageUrl}" class="exercise-detail-image" alt="${exercise.name}">`
+                : `<div style="width: 100%; height: 200px; background: rgba(201, 169, 98, 0.1); border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 4rem; margin-bottom: 1rem;">🏋️</div>`;
+            
+            const equipment = exercise.equipment || [];
+            const difficulty = exercise.difficulty || 'intermedio';
+            const description = exercise.description || 'Sin descripción disponible';
+            
+            content.innerHTML = `
+                ${imageHtml}
+                <div style="margin-bottom: 1rem;">
+                    <span class="difficulty-badge difficulty-${difficulty}">${difficulty}</span>
+                    <span class="exercise-muscle" style="margin-left: 0.5rem;">${exercise.muscle}</span>
+                </div>
+                <div class="form-group">
+                    <label>Descripción</label>
+                    <p style="color: var(--text); line-height: 1.6;">${description}</p>
+                </div>
+                ${equipment.length > 0 ? `
+                    <div class="form-group">
+                        <label>Equipo necesario</label>
+                        <div class="equipment-tags">
+                            ${equipment.map(eq => `<span class="equipment-tag">${eq}</span>`).join('')}
+                        </div>
+                    </div>
+                ` : ''}
+                ${exercise.isDefault ? `
+                    <div style="background: rgba(201, 169, 98, 0.1); padding: 1rem; border-radius: 12px; margin-top: 1rem;">
+                        <span style="color: var(--secondary); font-size: 0.9rem;">📌 Ejercicio predefinido del sistema</span>
+                    </div>
+                ` : `
+                    <div style="background: rgba(76, 175, 80, 0.1); padding: 1rem; border-radius: 12px; margin-top: 1rem;">
+                        <span style="color: #4caf50; font-size: 0.9rem;">✓ Ejercicio personalizado creado por ti</span>
+                    </div>
+                `}
+            `;
+            
+            modal.classList.add('active');
+        };
+
+        window.startWorkoutById = (id) => {
+            const routine = data.routines.find(r => r.id === id);
+            if (routine) startWorkout(routine);
+        };
+
+        // ============== FUNCIONES INTERNAS ==============
+
+        onAuthStateChanged(auth, async (user) => {
+            console.log('Auth state changed:', user ? 'LOGGED IN' : 'LOGGED OUT');
+            
+            if (user) {
+                userId = user.uid;
+                document.getElementById('authContainer').classList.add('hidden');
+                document.getElementById('appContainer').classList.remove('hidden');
+                document.getElementById('authLoading').classList.add('hidden');
+                document.getElementById('authForm').classList.remove('hidden');
+                document.getElementById("user-email").textContent = user.email || 'Usuario';
+                
+                setTimeout(async () => {
+                    await loadUserData();
+                }, 300);
+                
+            } else {
+                userId = null;
+                data.routines = [];
+                data.workouts = [];
+                data.exercises = data.exercises.filter(e => e.isDefault);
+                
+                document.getElementById('appContainer').classList.add('hidden');
+                document.getElementById('authContainer').classList.remove('hidden');
+                document.getElementById('authLoading').classList.add('hidden');
+                document.getElementById('authForm').classList.remove('hidden');
+                
+                console.log('Logout completado');
+            }
+        });
+
+        async function loadUserData() {
+            if (!userId) return;
+            
+            updateSyncStatus(true, 'Cargando...');
+            
+            try {
+                const exercisesQuery = query(collection(db, 'exercises'), where('userId', '==', userId));
+                const exercisesSnap = await getDocs(exercisesQuery);
+                const userExercises = exercisesSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+                data.exercises = [...data.exercises.filter(e => e.isDefault), ...userExercises];
+
+                const routinesQuery = query(collection(db, 'routines'), where('userId', '==', userId));
+                const routinesSnap = await getDocs(routinesQuery);
+                data.routines = routinesSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+
+                const workoutsQuery = query(collection(db, 'workouts'), where('userId', '==', userId));
+                const workoutsSnap = await getDocs(workoutsQuery);
+                data.workouts = workoutsSnap.docs
+                    .map(d => ({ id: d.id, ...d.data() }))
+                    .sort((a, b) => new Date(b.startTime) - new Date(a.startTime));
+
+                updateSyncStatus(true, 'Conectado');
+                renderAll();
+                showToast('✅ Datos cargados');
+                
+            } catch (error) {
+                console.error('Error general:', error);
+                updateSyncStatus(false, 'Error');
+                showToast('❌ Error cargando datos', true);
+            }
+        }
+
+        async function saveToFirebase(collectionName, item) {
+            if (!userId) {
+                showToast('❌ No autenticado', true);
+                return null;
+            }
+            
+            try {
+                const docRef = await addDoc(collection(db, collectionName), {
+                    ...item,
+                    userId: userId,
+                    createdAt: serverTimestamp(),
+                    updatedAt: serverTimestamp()
+                });
+                updateSyncStatus(true, 'Conectado');
+                return docRef.id;
+            } catch (error) {
+                console.error('Error guardando:', error);
+                showToast('❌ Error guardando: ' + error.message, true);
+                updateSyncStatus(false, 'Error');
+                return null;
+            }
+        }
+
+        async function deleteFromFirebase(collectionName, docId) {
+            if (!userId) return false;
+            try {
+                await deleteDoc(doc(db, collectionName, docId));
+                return true;
+            } catch (error) {
+                console.error('Error eliminando:', error);
+                return false;
+            }
+        }
+
+        async function uploadExerciseImage(file) {
+            if (!file || !userId) return null;
+
+            const fileName = `exercises/${userId}/${Date.now()}_${file.name}`;
+            const storageRef = ref(storage, fileName);
+
+            try {
+                showToast('📤 Subiendo imagen...');
+                const snapshot = await uploadBytes(storageRef, file);
+                const downloadURL = await getDownloadURL(snapshot.ref);
+                showToast('✅ Imagen subida');
+                return downloadURL;
+            } catch (error) {
+                console.error('Error subiendo imagen:', error);
+                showToast('❌ Error subiendo imagen: ' + error.message, true);
+                return null;
+            }
+        }
+
+        function resetExerciseForm() {
+            selectedImageFile = null;
+            document.getElementById('exerciseName').value = '';
+            document.getElementById('muscleGroup').value = 'pecho';
+            document.getElementById('exerciseDifficulty').value = 'intermedio';
+            document.getElementById('exerciseDescription').value = '';
+            document.getElementById('exerciseEquipment').value = '';
+            
+            const container = document.getElementById('imageUploadContainer');
+            const content = document.getElementById('imageUploadContent');
+            container.classList.remove('has-image');
+            content.innerHTML = `
+                <div style="font-size: 3rem; margin-bottom: 0.5rem;">📷</div>
+                <div class="image-upload-text">Haz clic para subir una imagen</div>
+                <div class="image-upload-hint">JPG, PNG o GIF (máx. 2MB)</div>
+            `;
+        }
+
+        function startWorkout(routine) {
+            data.currentWorkout = {
+                routineId: routine.id,
+                routineName: routine.name,
+                startTime: new Date().toISOString(),
+                exercises: routine.exercises.map(ex => ({
+                    ...ex,
+                    setsCompleted: Array(ex.sets).fill(null).map((_, i) => ({
+                        setNumber: i + 1,
+                        weight: '',
+                        reps: '',
+                        completed: false
+                    }))
+                })),
+                totalVolume: 0
+            };
+            
+            document.getElementById('activeWorkoutTitle').textContent = `🔥 ${routine.name}`;
+            renderActiveWorkout();
+            openModal('activeWorkoutModal');
+        }
+
+        function renderActiveWorkout() {
+            const container = document.getElementById('activeExercises');
+            container.innerHTML = '';
+
+            data.currentWorkout.exercises.forEach((ex, i) => {
+                const div = document.createElement('div');
+                div.className = 'session-exercise';
+                
+                let setsHtml = ex.setsCompleted.map((set, j) => `
+                    <div class="set-row">
+                        <span style="color: var(--secondary); font-weight: 700;">${set.setNumber}</span>
+                        <input type="number" placeholder="kg" value="${set.weight}" onchange="updateSet(${i}, ${j}, 'weight', this.value)" style="padding: 0.5rem; border-radius: 8px; border: 2px solid rgba(201, 169, 98, 0.2); background: rgba(0,0,0,0.3); color: white;">
+                        <input type="number" placeholder="reps" value="${set.reps}" onchange="updateSet(${i}, ${j}, 'reps', this.value)" style="padding: 0.5rem; border-radius: 8px; border: 2px solid rgba(201, 169, 98, 0.2); background: rgba(0,0,0,0.3); color: white;">
+                        <input type="checkbox" ${set.completed ? 'checked' : ''} onchange="toggleSet(${i}, ${j}, this.checked)" style="width: 24px; height: 24px; accent-color: var(--secondary);">
+                    </div>
+                `).join('');
+                
+                div.innerHTML = `
+                    <div style="font-weight: 700; color: var(--secondary); margin-bottom: 0.5rem;">${ex.name}</div>
+                    <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.5rem;">${ex.muscle} • ${ex.sets}×${ex.reps}</div>
+                    ${setsHtml}
+                `;
+                container.appendChild(div);
+            });
+        }
+
         function renderAll() {
             renderDashboard();
             renderRoutines();
@@ -1837,7 +1908,7 @@
             data.workouts.forEach(w => {
                 if (new Date(w.startTime) >= weekAgo) {
                     w.exercises.forEach(ex => {
-                        const vol = ex.setsCompleted?.reduce((sum, s) => sum + (parseFloat(s.weight) * parseFloat(s.reps) || 0), const vol = ex.setsCompleted?.reduce((sum, s) => sum + (parseFloat(s.weight) * parseFloat(s.reps) || 0), 0) || 0;
+                        const vol = ex.setsCompleted?.reduce((sum, s) => sum + (parseFloat(s.weight) * parseFloat(s.reps) || 0), 0) || 0;
                         volumes[ex.muscle] = (volumes[ex.muscle] || 0) + vol;
                     });
                 }
@@ -1861,11 +1932,6 @@
                 `;
             }).join('');
         }
-
-        window.startWorkoutById = (id) => {
-            const routine = data.routines.find(r => r.id === id);
-            if (routine) startWorkout(routine);
-        };
 
         function renderRoutines() {
             const container = document.getElementById('routinesList');
@@ -1891,7 +1957,6 @@
             }).join('');
         }
 
-        // FUNCIÓN MEJORADA PARA RENDERIZAR EJERCICIOS CON IMÁGENES
         function renderExercises() {
             const search = document.getElementById('exerciseSearch')?.value?.toLowerCase() || '';
             const muscleFilter = document.getElementById('filterMuscle')?.value || '';
@@ -1955,59 +2020,6 @@
             }).join('');
         }
 
-        window.filterExercises = () => renderExercises();
-
-        // NUEVA FUNCIÓN: Mostrar detalle del ejercicio
-        window.showExerciseDetail = (id) => {
-            const exercise = data.exercises.find(e => e.id === id);
-            if (!exercise) return;
-            
-            const modal = document.getElementById('exerciseDetailModal');
-            const content = document.getElementById('exerciseDetailContent');
-            const nameEl = document.getElementById('detailExerciseName');
-            
-            nameEl.textContent = exercise.name;
-            
-            const imageHtml = exercise.imageUrl 
-                ? `<img src="${exercise.imageUrl}" class="exercise-detail-image" alt="${exercise.name}">`
-                : `<div style="width: 100%; height: 200px; background: rgba(201, 169, 98, 0.1); border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 4rem; margin-bottom: 1rem;">🏋️</div>`;
-            
-            const equipment = exercise.equipment || [];
-            const difficulty = exercise.difficulty || 'intermedio';
-            const description = exercise.description || 'Sin descripción disponible';
-            
-            content.innerHTML = `
-                ${imageHtml}
-                <div style="margin-bottom: 1rem;">
-                    <span class="difficulty-badge difficulty-${difficulty}">${difficulty}</span>
-                    <span class="exercise-muscle" style="margin-left: 0.5rem;">${exercise.muscle}</span>
-                </div>
-                <div class="form-group">
-                    <label>Descripción</label>
-                    <p style="color: var(--text); line-height: 1.6;">${description}</p>
-                </div>
-                ${equipment.length > 0 ? `
-                    <div class="form-group">
-                        <label>Equipo necesario</label>
-                        <div class="equipment-tags">
-                            ${equipment.map(eq => `<span class="equipment-tag">${eq}</span>`).join('')}
-                        </div>
-                    </div>
-                ` : ''}
-                ${exercise.isDefault ? `
-                    <div style="background: rgba(201, 169, 98, 0.1); padding: 1rem; border-radius: 12px; margin-top: 1rem;">
-                        <span style="color: var(--secondary); font-size: 0.9rem;">📌 Ejercicio predefinido del sistema</span>
-                    </div>
-                ` : `
-                    <div style="background: rgba(76, 175, 80, 0.1); padding: 1rem; border-radius: 12px; margin-top: 1rem;">
-                        <span style="color: #4caf50; font-size: 0.9rem;">✓ Ejercicio personalizado creado por ti</span>
-                    </div>
-                `}
-            `;
-            
-            modal.classList.add('active');
-        };
-
         function renderProgress() {
             document.getElementById('totalWorkouts').textContent = data.workouts.length;
             const totalVol = data.workouts.reduce((sum, w) => sum + (w.totalVolume || 0), 0);
@@ -2056,13 +2068,13 @@
             `).join('') || '<p style="text-align: center; color: var(--text-muted);">Sin historial</p>';
         }
 
-        window.updateWorkoutSelect = () => {
+        function updateWorkoutSelect() {
             const select = document.getElementById('workoutRoutineSelect');
             select.innerHTML = '<option value="">-- Seleccionar --</option>';
             data.routines.forEach(r => {
                 select.innerHTML += `<option value="${r.id}">${r.name}</option>`;
             });
-        };
+        }
 
         function showToast(msg, isError = false) {
             const toast = document.getElementById('toast');
@@ -2078,10 +2090,6 @@
             badge.className = 'sync-badge ' + (online ? '' : 'offline') + (text === 'Cargando...' ? ' loading' : '');
             txt.textContent = text || (online ? 'Conectado' : 'Sin conexión');
         }
-
-        window.startWorkout = startWorkout;
-        window.showToast = showToast;
     </script>
 </body>
-</html>
-                                                            
+</html>                                       
