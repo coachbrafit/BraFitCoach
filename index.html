@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> BraFit-Coach </title>
+    <title> BraFitCoach </title>
     <style>
         * {
             margin: 0;
@@ -36,10 +36,9 @@
             color: var(--text);
             min-height: 100vh;
             overflow-x: hidden;
-            background-repeat: no-repeat;      /* No se repite */
-            background-position: center bottom;  /* Posición abajo */
-            background-size: 350px;              /* Más pequeño */
-
+            background-repeat: no-repeat;
+            background-position: center bottom;
+            background-size: 350px;
         }
         
         /* Auth Section */
@@ -50,7 +49,6 @@
             justify-content: center;
             min-height: 100vh;
             padding: 2rem;
-            /* FONDO BEIGE */
             background: linear-gradient(135deg, #f5f5dc 0%, #e8e4d9 100%);
             position: relative;
         }
@@ -62,8 +60,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            /* LOGO MÁS ARRIBA */
-            background-position: center 1%; /* Cambiado de 20% a 15% */
+            background-position: center 1%;
             background-size: 300px;
             opacity: 0.99;
             pointer-events: none;
@@ -79,7 +76,6 @@
             backdrop-filter: blur(10px);
             position: relative;
             z-index: 1;
-            /* Centrado horizontal, ligeramente bajado */
             margin: 80px auto 0 auto;
         }
 
@@ -151,7 +147,6 @@
             margin: 0 auto;
         }
 
-        /* 👇 AGREGAR AQUÍ */
         .logo-title {
             display: flex;
             align-items: center;
@@ -377,7 +372,7 @@
             width: 100%;
         }
 
-        /* Exercise Cards - NUEVO DISEÑO CON IMAGEN */
+        /* Exercise Cards */
         .exercise-card {
             background: linear-gradient(135deg, rgba(201, 169, 98, 0.08), rgba(26, 39, 68, 0.4));
             border-radius: 16px;
@@ -480,11 +475,11 @@
 
         .muscle-map {
             display: grid;
-            grid-template-columns: 1fr; /* 📱 móvil SIEMPRE 1 columna */
+            grid-template-columns: 1fr;
             gap: 0.75rem;
             margin-top: 1rem;
         }
-        /* Solo desde tablet en adelante cambia */
+
         @media (max-width: 768px) {
             .muscle-map {
                 display: flex !important;
@@ -495,7 +490,7 @@
                 width: 100% !important;
             }
         }
-        /* Desktop */
+
         @media (min-width: 1024px) {
             .muscle-map {
                 grid-template-columns: repeat(3, 1fr);
@@ -849,6 +844,126 @@
             font-size: 0.75rem;
             color: var(--gold-light);
         }
+
+        /* NUEVO: Estilos para Historial de Pesos */
+        .pr-badge {
+            background: linear-gradient(135deg, rgba(201, 169, 98, 0.3), rgba(201, 169, 98, 0.1));
+            border: 2px solid var(--secondary);
+            border-radius: 12px;
+            padding: 1rem;
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .pr-value {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--secondary);
+            text-shadow: 0 0 10px rgba(201, 169, 98, 0.3);
+        }
+
+        .pr-label {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-top: 0.25rem;
+        }
+
+        .chart-container {
+            background: rgba(0,0,0,0.3);
+            border-radius: 16px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid rgba(201, 169, 98, 0.2);
+        }
+
+        .chart-svg {
+            width: 100%;
+            height: 200px;
+        }
+
+        .history-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .history-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            background: rgba(0,0,0,0.2);
+            border-radius: 10px;
+            margin-bottom: 0.5rem;
+            border-left: 3px solid var(--secondary);
+        }
+
+        .history-item.pr-entry {
+            border-left-color: #4caf50;
+            background: rgba(76, 175, 80, 0.05);
+        }
+
+        .history-weight {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--secondary);
+        }
+
+        .history-reps {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .history-date {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .pr-tag {
+            background: #4caf50;
+            color: white;
+            padding: 0.2rem 0.5rem;
+            border-radius: 8px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            margin-left: 0.5rem;
+        }
+
+        .stats-comparison {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .comparison-item {
+            text-align: center;
+            padding: 0.75rem;
+            background: rgba(255,255,255,0.05);
+            border-radius: 10px;
+        }
+
+        .comparison-value {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--secondary);
+        }
+
+        .comparison-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .trend-up {
+            color: #4caf50;
+        }
+
+        .trend-down {
+            color: #f44336;
+        }
+
+        .trend-same {
+            color: var(--text-muted);
+        }
     </style>
 </head>
 <body>
@@ -972,7 +1087,6 @@
                     <button class="btn btn-primary" onclick="openModal('exerciseModal')">+ Agregar</button>
                 </div>
                 
-                <!-- Search and Filters -->
                 <input type="text" id="exerciseSearch" placeholder="🔍 Buscar ejercicios..." style="width: 100%; margin-bottom: 0.5rem; padding: 0.875rem; border-radius: 12px; border: 2px solid rgba(201, 169, 98, 0.2); background: rgba(0,0,0,0.3); color: white;" onkeyup="filterExercises()">
                 
                 <div class="filters-container">
@@ -1000,7 +1114,7 @@
             </div>
         </section>
 
-        <!-- Progress Section -->
+        <!-- Progress Section - MEJORADO CON HISTORIAL DE PESOS -->
         <section id="progress" class="section">
             <div class="stats-grid">
                 <div class="stat-card">
@@ -1020,8 +1134,23 @@
                     <div style="font-size: 0.85rem; color: var(--text-muted);">Favorito</div>
                 </div>
             </div>
+
+            <!-- NUEVO: Selector de ejercicio para ver progreso -->
             <div class="card">
-                <div class="card-title">📅 Historial</div>
+                <div class="card-title">📈 Progreso por Ejercicio</div>
+                <select id="progressExerciseSelect" onchange="showExerciseProgress()" style="width: 100%; margin-bottom: 1rem; padding: 0.875rem; border-radius: 12px; border: 2px solid rgba(201, 169, 98, 0.2); background: rgba(0,0,0,0.3); color: white;">
+                    <option value="">-- Seleccionar ejercicio --</option>
+                </select>
+                <div id="exerciseProgressContainer">
+                    <div class="empty-state">
+                        <div style="font-size: 3rem; margin-bottom: 1rem;">📊</div>
+                        <p>Selecciona un ejercicio para ver tu progreso</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">📅 Historial de Entrenamientos</div>
                 <div id="workoutHistory">
                     <p style="text-align: center; color: var(--text-muted);">Cargando historial...</p>
                 </div>
@@ -1061,7 +1190,7 @@
         </div>
     </div>
 
-    <!-- Exercise Modal - MEJORADO CON IMAGEN Y DESCRIPCIÓN -->
+    <!-- Exercise Modal -->
     <div class="modal-overlay" id="exerciseModal">
         <div class="modal">
             <div class="modal-header">
@@ -1069,7 +1198,6 @@
                 <button class="close-btn" onclick="closeModal('exerciseModal')">&times;</button>
             </div>
             
-            <!-- Image Upload -->
             <div class="image-upload-container" id="imageUploadContainer" onclick="document.getElementById('exerciseImageInput').click()">
                 <div id="imageUploadContent">
                     <div style="font-size: 3rem; margin-bottom: 0.5rem;">📷</div>
@@ -1120,16 +1248,25 @@
         </div>
     </div>
 
-    <!-- Exercise Detail Modal - NUEVO -->
+    <!-- Exercise Detail Modal -->
     <div class="modal-overlay" id="exerciseDetailModal">
         <div class="modal">
             <div class="modal-header">
                 <div class="modal-title" id="detailExerciseName">Detalle del Ejercicio</div>
                 <button class="close-btn" onclick="closeModal('exerciseDetailModal')">&times;</button>
             </div>
-            <div id="exerciseDetailContent">
-                <!-- Contenido dinámico -->
+            <div id="exerciseDetailContent"></div>
+        </div>
+    </div>
+
+    <!-- NUEVO: Exercise Progress Detail Modal -->
+    <div class="modal-overlay" id="exerciseProgressModal">
+        <div class="modal" style="max-width: 700px;">
+            <div class="modal-header">
+                <div class="modal-title" id="progressModalTitle">📈 Progreso</div>
+                <button class="close-btn" onclick="closeModal('exerciseProgressModal')">&times;</button>
             </div>
+            <div id="exerciseProgressModalContent"></div>
         </div>
     </div>
 
@@ -1285,7 +1422,6 @@
         };
 
         // ============== FUNCIONES GLOBALES ==============
-        // Todas las funciones llamadas desde HTML deben estar en window
 
         window.handleAuth = async () => {
             const email = document.getElementById('authEmail').value;
@@ -1352,7 +1488,6 @@
             
             document.getElementById(sectionId).classList.add('active');
             
-            // Actualizar tab activo
             const tabs = document.querySelectorAll('.nav-tab');
             const sectionMap = {
                 'dashboard': 0,
@@ -1368,7 +1503,10 @@
             if (sectionId === 'dashboard') renderDashboard();
             if (sectionId === 'routines') renderRoutines();
             if (sectionId === 'exercises') renderExercises();
-            if (sectionId === 'progress') renderProgress();
+            if (sectionId === 'progress') {
+                renderProgress();
+                updateProgressExerciseSelect();
+            }
             if (sectionId === 'workout') updateWorkoutSelect();
         };
 
@@ -1680,10 +1818,192 @@
                         <span style="color: #4caf50; font-size: 0.9rem;">✓ Ejercicio personalizado creado por ti</span>
                     </div>
                 `}
+                <button class="btn btn-primary btn-full" onclick="showExerciseProgressDetail('${exercise.id}')" style="margin-top: 1rem;">
+                    📈 Ver Progreso de Pesos
+                </button>
             `;
             
             modal.classList.add('active');
         };
+
+        // NUEVA FUNCIÓN: Mostrar progreso en el modal de detalle
+        window.showExerciseProgressDetail = (exerciseId) => {
+            closeModal('exerciseDetailModal');
+            showExerciseProgressModal(exerciseId);
+        };
+
+        // NUEVA FUNCIÓN: Mostrar progreso desde el selector de progreso
+        window.showExerciseProgress = () => {
+            const exerciseId = document.getElementById('progressExerciseSelect').value;
+            if (!exerciseId) {
+                document.getElementById('exerciseProgressContainer').innerHTML = `
+                    <div class="empty-state">
+                        <div style="font-size: 3rem; margin-bottom: 1rem;">📊</div>
+                        <p>Selecciona un ejercicio para ver tu progreso</p>
+                    </div>
+                `;
+                return;
+            }
+            showExerciseProgressModal(exerciseId);
+        };
+
+        // NUEVA FUNCIÓN: Mostrar modal de progreso completo
+        function showExerciseProgressModal(exerciseId) {
+            const exercise = data.exercises.find(e => e.id === exerciseId);
+            if (!exercise) return;
+
+            // Buscar todos los registros de este ejercicio en todos los workouts
+            const history = [];
+            data.workouts.forEach(workout => {
+                workout.exercises.forEach(ex => {
+                    if (ex.name === exercise.name) {
+                        ex.setsCompleted.forEach(set => {
+                            if (set.completed && set.weight && set.reps) {
+                                history.push({
+                                    date: new Date(workout.startTime),
+                                    weight: parseFloat(set.weight),
+                                    reps: parseInt(set.reps),
+                                    volume: parseFloat(set.weight) * parseInt(set.reps),
+                                    workoutId: workout.id
+                                });
+                            }
+                        });
+                    }
+                });
+            });
+
+            // Ordenar por fecha (más reciente primero)
+            history.sort((a, b) => b.date - a.date);
+
+                        // Calcular PR (máximo peso levantado)
+            const pr = history.length > 0 ? Math.max(...history.map(h => h.weight)) : 0;
+            
+            // Calcular estadísticas
+            const oneRM = history.length > 0 ? Math.max(...history.map(h => h.weight * (1 + h.reps/30))) : 0;
+            const avgWeight = history.length > 0 ? (history.reduce((sum, h) => sum + h.weight, 0) / history.length).toFixed(1) : 0;
+            const totalSets = history.length;
+            
+            // Calcular tendencia (últimos 3 vs anteriores 3)
+            let trend = 'same';
+            if (history.length >= 6) {
+                const recent = history.slice(0, 3).reduce((sum, h) => sum + h.weight, 0) / 3;
+                const previous = history.slice(3, 6).reduce((sum, h) => sum + h.weight, 0) / 3;
+                if (recent > previous * 1.02) trend = 'up';
+                else if (recent < previous * 0.98) trend = 'down';
+            }
+
+            const modal = document.getElementById('exerciseProgressModal');
+            const content = document.getElementById('exerciseProgressModalContent');
+            document.getElementById('progressModalTitle').textContent = `📈 ${exercise.name}`;
+
+            // Generar gráfica SVG simple
+            let chartHtml = '';
+            if (history.length >= 2) {
+                const weights = history.map(h => h.weight).reverse();
+                const minW = Math.min(...weights) * 0.9;
+                const maxW = Math.max(...weights) * 1.1;
+                const range = maxW - minW || 1;
+                
+                const points = weights.map((w, i) => {
+                    const x = (i / (weights.length - 1)) * 100;
+                    const y = 100 - ((w - minW) / range) * 80 - 10;
+                    return `${x},${y}`;
+                }).join(' ');
+
+                chartHtml = `
+                    <div class="chart-container">
+                        <svg class="chart-svg" viewBox="0 0 100 100" preserveAspectRatio="none">
+                            <polyline
+                                fill="none"
+                                stroke="var(--secondary)"
+                                stroke-width="2"
+                                points="${points}"
+                            />
+                            ${weights.map((w, i) => {
+                                const x = (i / (weights.length - 1)) * 100;
+                                const y = 100 - ((w - minW) / range) * 80 - 10;
+                                return `<circle cx="${x}" cy="${y}" r="1.5" fill="var(--secondary)"/>`;
+                            }).join('')}
+                        </svg>
+                        <div style="display: flex; justify-content: space-between; margin-top: 0.5rem; font-size: 0.75rem; color: var(--text-muted);">
+                            <span>${weights.length} registros</span>
+                            <span>${minW.toFixed(0)} - ${maxW.toFixed(0)} kg</span>
+                        </div>
+                    </div>
+                `;
+            } else {
+                chartHtml = `
+                    <div class="chart-container" style="text-align: center; padding: 2rem;">
+                        <div style="font-size: 2rem; margin-bottom: 0.5rem;">📊</div>
+                        <p style="color: var(--text-muted);">Necesitas más registros para ver la gráfica</p>
+                    </div>
+                `;
+            }
+
+            // Generar lista de historial
+            const historyHtml = history.slice(0, 10).map((h, index) => {
+                const isPR = h.weight === pr && index === history.findIndex(x => x.weight === pr);
+                const dateStr = h.date.toLocaleDateString('es-ES', { day: 'numeric', month: 'short' });
+                return `
+                    <div class="history-item ${isPR ? 'pr-entry' : ''}">
+                        <div>
+                            <span class="history-weight">${h.weight} kg</span>
+                            <span class="history-reps">× ${h.reps} reps</span>
+                            ${isPR ? '<span class="pr-tag">🏆 PR</span>' : ''}
+                        </div>
+                        <div style="text-align: right;">
+                            <div class="history-date">${dateStr}</div>
+                            <div style="font-size: 0.75rem; color: var(--text-muted);">${h.volume} kg vol</div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            // Estadísticas de comparación
+            const trendIcon = trend === 'up' ? '📈' : trend === 'down' ? '📉' : '➡️';
+            const trendClass = trend === 'up' ? 'trend-up' : trend === 'down' ? 'trend-down' : 'trend-same';
+
+            content.innerHTML = `
+                <!-- PR Badge -->
+                <div class="pr-badge">
+                    <div class="pr-value">${pr} kg</div>
+                    <div class="pr-label">🏆 Personal Record (PR)</div>
+                </div>
+
+                <!-- Estimación 1RM -->
+                <div style="background: rgba(201, 169, 98, 0.1); border-radius: 12px; padding: 1rem; margin-bottom: 1rem; text-align: center;">
+                    <div style="font-size: 1.5rem; font-weight: 700; color: var(--secondary);">${oneRM.toFixed(1)} kg</div>
+                    <div style="font-size: 0.85rem; color: var(--text-muted);">Estimación 1RM máximo</div>
+                </div>
+
+                <!-- Gráfica -->
+                ${chartHtml}
+
+                <!-- Estadísticas -->
+                <div class="stats-comparison">
+                    <div class="comparison-item">
+                        <div class="comparison-value ${trendClass}">${trendIcon} ${avgWeight}</div>
+                        <div class="comparison-label">Promedio (kg)</div>
+                    </div>
+                    <div class="comparison-item">
+                        <div class="comparison-value">${totalSets}</div>
+                        <div class="comparison-label">Total Series</div>
+                    </div>
+                    <div class="comparison-item">
+                        <div class="comparison-value">${history.length > 0 ? (history[0].weight - history[history.length-1].weight).toFixed(1) : 0}</div>
+                        <div class="comparison-label">Progreso (kg)</div>
+                    </div>
+                </div>
+
+                <!-- Historial -->
+                <div class="card-title" style="margin-top: 1.5rem;">📋 Historial Reciente</div>
+                <div class="history-list">
+                    ${historyHtml || '<p style="text-align: center; color: var(--text-muted);">Sin registros aún</p>'}
+                </div>
+            `;
+
+            modal.classList.add('active');
+        }
 
         window.startWorkoutById = (id) => {
             const routine = data.routines.find(r => r.id === id);
@@ -1850,7 +2170,7 @@
         function renderActiveWorkout() {
             const container = document.getElementById('activeExercises');
             container.innerHTML = '';
-
+            
             data.currentWorkout.exercises.forEach((ex, i) => {
                 const div = document.createElement('div');
                 div.className = 'session-exercise';
@@ -2020,6 +2340,33 @@
             }).join('');
         }
 
+        // NUEVA FUNCIÓN: Actualizar selector de ejercicios en progreso
+        function updateProgressExerciseSelect() {
+            const select = document.getElementById('progressExerciseSelect');
+            select.innerHTML = '<option value="">-- Seleccionar ejercicio --</option>';
+            
+            // Agrupar por grupo muscular
+            const byMuscle = {};
+            data.exercises.forEach(e => {
+                if (!byMuscle[e.muscle]) byMuscle[e.muscle] = [];
+                byMuscle[e.muscle].push(e);
+            });
+            
+            Object.keys(byMuscle).sort().forEach(muscle => {
+                const optgroup = document.createElement('optgroup');
+                optgroup.label = muscle.charAt(0).toUpperCase() + muscle.slice(1);
+                
+                byMuscle[muscle].forEach(e => {
+                    const option = document.createElement('option');
+                    option.value = e.id;
+                    option.textContent = e.name;
+                    optgroup.appendChild(option);
+                });
+                
+                select.appendChild(optgroup);
+            });
+        }
+
         function renderProgress() {
             document.getElementById('totalWorkouts').textContent = data.workouts.length;
             const totalVol = data.workouts.reduce((sum, w) => sum + (w.totalVolume || 0), 0);
@@ -2092,4 +2439,4 @@
         }
     </script>
 </body>
-</html>                                       
+</html>
