@@ -12,22 +12,20 @@
         }
       
         :root {
-            /* Colores BRAFIT Principales */
-            --primary: #1a2744;        /* Azul marino */
-            --secondary: #c9a962;      /* Dorado */
-            --gold-light: #d4b896;     /* Dorado claro */
-            
-            /* Colores de Soporte */
-            --dark: #1a2744;           
-            --darker: #0f1729;         
-            --light: #c9a962;          
-            --success: #c9a962;        
-            --accent-blue: #2d3e5c;    
-            
-            /* Texto */
-            --text: #f5f5f5;           
-            --text-muted: #a0a0a0;     
-            --text-gold: #c9a962;      
+            --primary: #1a2744;
+            --secondary: #c9a962;
+            --gold-light: #d4b896;
+            --dark: #1a2744;
+            --darker: #0f1729;
+            --light: #c9a962;
+            --success: #c9a962;
+            --accent-blue: #2d3e5c;
+            --text: #f5f5f5;
+            --text-muted: #a0a0a0;
+            --text-gold: #c9a962;
+            --danger: #8b2635;
+            --success-green: #4caf50;
+            --warning: #ff9800;
         }
 
         body {
@@ -41,7 +39,6 @@
             background-size: 350px;
         }
         
-        /* Auth Section */
         .auth-container {
             display: flex;
             flex-direction: column;
@@ -126,7 +123,6 @@
             cursor: not-allowed;
         }
 
-        /* Header */
         .header {
             background: rgba(26, 39, 68, 0.95);
             backdrop-filter: blur(10px);
@@ -219,7 +215,6 @@
             color: var(--secondary);
         }
 
-        /* Navigation */
         .nav-tabs {
             display: flex;
             gap: 0.5rem;
@@ -254,7 +249,6 @@
             font-weight: 700;
         }
 
-        /* Sections */
         .section {
             display: none;
             padding: 1rem;
@@ -272,7 +266,6 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Cards */
         .card {
             background: rgba(255,255,255,0.05);
             border-radius: 16px;
@@ -291,7 +284,6 @@
             font-weight: 700;
         }
 
-        /* Forms */
         .form-group {
             margin-bottom: 1rem;
         }
@@ -323,7 +315,6 @@
             resize: vertical;
         }
 
-        /* Buttons */
         .btn {
             padding: 0.875rem 1.5rem;
             border-radius: 12px;
@@ -372,7 +363,6 @@
             width: 100%;
         }
 
-        /* Exercise Cards */
         .exercise-card {
             background: linear-gradient(135deg, rgba(201, 169, 98, 0.08), rgba(26, 39, 68, 0.4));
             border-radius: 16px;
@@ -465,7 +455,6 @@
             font-size: 0.8rem;
         }
 
-        /* Quick Actions */
         .quick-actions {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -519,7 +508,6 @@
             margin-bottom: 0.5rem;
         }
 
-        /* Modal */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -575,7 +563,6 @@
             color: var(--secondary);
         }
 
-        /* Image Upload */
         .image-upload-container {
             border: 2px dashed rgba(201, 169, 98, 0.3);
             border-radius: 16px;
@@ -620,14 +607,12 @@
             display: none;
         }
 
-        /* Empty State */
         .empty-state {
             text-align: center;
             padding: 3rem 1rem;
             color: var(--text-muted);
         }
 
-        /* Loading */
         .spinner {
             width: 40px;
             height: 40px;
@@ -641,7 +626,6 @@
             to { transform: rotate(360deg); }
         }
 
-        /* Stats */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -680,7 +664,6 @@
             color: var(--secondary);
         }
 
-        /* Muscle Map */
         .muscle-map {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -719,7 +702,6 @@
             transition: width 0.5s ease;
         }
 
-        /* Workout Session */
         .session-exercise {
             background: rgba(0,0,0,0.3);
             border-radius: 16px;
@@ -747,7 +729,6 @@
             margin: 1rem 0;
         }
 
-        /* Toast */
         .toast {
             position: fixed;
             bottom: 2rem;
@@ -777,7 +758,6 @@
             display: none !important;
         }
 
-        /* Filters */
         .filters-container {
             display: flex;
             gap: 0.5rem;
@@ -795,7 +775,6 @@
             color: white;
         }
 
-        /* Detail Modal */
         .exercise-detail-image {
             width: 100%;
             max-height: 300px;
@@ -845,7 +824,6 @@
             color: var(--gold-light);
         }
 
-        /* NUEVO: Estilos para Historial de Pesos */
         .pr-badge {
             background: linear-gradient(135deg, rgba(201, 169, 98, 0.3), rgba(201, 169, 98, 0.1));
             border: 2px solid var(--secondary);
@@ -964,6 +942,291 @@
         .trend-same {
             color: var(--text-muted);
         }
+
+        /* NUEVO: Estilos para Medidas Corporales */
+        .measurements-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        @media (min-width: 768px) {
+            .measurements-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        .measurement-input-group {
+            background: rgba(0,0,0,0.2);
+            padding: 1rem;
+            border-radius: 12px;
+            border: 1px solid rgba(201, 169, 98, 0.2);
+        }
+
+        .measurement-input-group label {
+            font-size: 0.8rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-muted);
+        }
+
+        .measurement-input-group input {
+            font-size: 1.2rem;
+            font-weight: 700;
+            text-align: center;
+        }
+
+        .body-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        @media (min-width: 768px) {
+            .body-stats-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+
+        .body-stat-card {
+            background: linear-gradient(135deg, rgba(201, 169, 98, 0.15), rgba(201, 169, 98, 0.05));
+            border-radius: 16px;
+            padding: 1.25rem;
+            text-align: center;
+            border: 2px solid rgba(201, 169, 98, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .body-stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--secondary), var(--gold-light));
+        }
+
+        .body-stat-value {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--secondary);
+            margin-bottom: 0.25rem;
+        }
+
+        .body-stat-label {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .body-stat-change {
+            font-size: 0.75rem;
+            margin-top: 0.5rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 8px;
+            display: inline-block;
+        }
+
+        .change-positive {
+            background: rgba(76, 175, 80, 0.2);
+            color: #4caf50;
+        }
+
+        .change-negative {
+            background: rgba(244, 67, 54, 0.2);
+            color: #f44336;
+        }
+
+        .change-neutral {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-muted);
+        }
+
+        .imc-badge {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            margin-top: 0.5rem;
+        }
+
+        .imc-bajo { background: rgba(33, 150, 243, 0.2); color: #2196f3; }
+        .imc-normal { background: rgba(76, 175, 80, 0.2); color: #4caf50; }
+        .imc-sobrepeso { background: rgba(255, 152, 0, 0.2); color: #ff9800; }
+        .imc-obesidad { background: rgba(244, 67, 54, 0.2); color: #f44336; }
+
+        .measurement-history-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            background: rgba(0,0,0,0.2);
+            border-radius: 12px;
+            margin-bottom: 0.75rem;
+            border-left: 4px solid var(--secondary);
+        }
+
+        .measurement-date {
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .measurement-values {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .measurement-value-pair {
+            text-align: center;
+        }
+
+        .measurement-value-number {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--secondary);
+        }
+
+        .measurement-value-label {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+        }
+
+        .photo-comparison {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .photo-slot {
+            aspect-ratio: 3/4;
+            background: rgba(0,0,0,0.3);
+            border-radius: 12px;
+            border: 2px dashed rgba(201, 169, 98, 0.3);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .photo-slot:hover {
+            border-color: var(--secondary);
+            background: rgba(201, 169, 98, 0.05);
+        }
+
+        .photo-slot.has-photo {
+            border-style: solid;
+            border-color: var(--secondary);
+        }
+
+        .photo-slot img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        .photo-label {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent, rgba(0,0,0,0.8));
+            padding: 1rem 0.5rem 0.5rem;
+            font-size: 0.8rem;
+            text-align: center;
+            z-index: 1;
+        }
+
+        .pliegues-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        @media (max-width: 480px) {
+            .pliegues-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .pliegue-input {
+            background: rgba(0,0,0,0.2);
+            padding: 0.75rem;
+            border-radius: 10px;
+            border: 1px solid rgba(201, 169, 98, 0.2);
+        }
+
+        .pliegue-input label {
+            font-size: 0.75rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .pliegue-input input {
+            font-size: 1rem;
+            padding: 0.5rem;
+        }
+
+        .body-composition-result {
+            background: linear-gradient(135deg, rgba(201, 169, 98, 0.1), rgba(26, 39, 68, 0.3));
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-top: 1rem;
+            border: 2px solid rgba(201, 169, 98, 0.3);
+        }
+
+        .composition-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            text-align: center;
+        }
+
+        .composition-item {
+            padding: 1rem;
+        }
+
+        .composition-value {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--secondary);
+        }
+
+        .composition-label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: 0.25rem;
+        }
+
+        .composition-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 4px;
+            margin-top: 0.5rem;
+            overflow: hidden;
+        }
+
+        .composition-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        .fill-muscle { background: linear-gradient(90deg, #4caf50, #8bc34a); }
+        .fill-fat { background: linear-gradient(90deg, #ff9800, #ffc107); }
+        .fill-other { background: linear-gradient(90deg, var(--secondary), var(--gold-light)); }
     </style>
 </head>
 <body>
@@ -1010,6 +1273,7 @@
             <button class="nav-tab" onclick="showSection('routines')">📝 Rutinas</button>
             <button class="nav-tab" onclick="showSection('workout')">🔥 Entrenar</button>
             <button class="nav-tab" onclick="showSection('exercises')">📚 Ejercicios</button>
+            <button class="nav-tab" onclick="showSection('measurements')">📏 Medidas</button>
             <button class="nav-tab" onclick="showSection('progress')">📈 Progreso</button>
         </nav>
 
@@ -1026,9 +1290,9 @@
                         <div class="action-icon">➕</div>
                         <div>Nueva Rutina</div>
                     </div>
-                    <div class="action-btn" onclick="showSection('progress')">
-                        <div class="action-icon">📊</div>
-                        <div>Stats</div>
+                    <div class="action-btn" onclick="showSection('measurements')">
+                        <div class="action-icon">📏</div>
+                        <div>Medidas</div>
                     </div>
                     <div class="action-btn" onclick="openModal('exerciseModal')">
                         <div class="action-icon">🎯</div>
@@ -1114,7 +1378,106 @@
             </div>
         </section>
 
-        <!-- Progress Section - MEJORADO CON HISTORIAL DE PESOS -->
+        <!-- NUEVO: Measurements Section -->
+        <section id="measurements" class="section">
+            <!-- Resumen Corporal -->
+            <div class="card">
+                <div class="card-title">📊 Resumen Corporal</div>
+                <div class="body-stats-grid" id="bodyStatsGrid">
+                    <div class="body-stat-card">
+                        <div class="body-stat-value" id="currentWeight">--</div>
+                        <div class="body-stat-label">Peso Actual (kg)</div>
+                        <div class="body-stat-change change-neutral" id="weightChange">Sin cambios</div>
+                    </div>
+                    <div class="body-stat-card">
+                        <div class="body-stat-value" id="currentIMC">--</div>
+                        <div class="body-stat-label">IMC</div>
+                        <div class="imc-badge" id="imcCategory">--</div>
+                    </div>
+                    <div class="body-stat-card">
+                        <div class="body-stat-value" id="currentFat">--%</div>
+                        <div class="body-stat-label">Grasa Corporal</div>
+                        <div class="body-stat-change change-neutral" id="fatChange">Sin cambios</div>
+                    </div>
+                    <div class="body-stat-card">
+                        <div class="body-stat-value" id="currentMuscle">--%</div>
+                        <div class="body-stat-label">Músculo</div>
+                        <div class="body-stat-change change-neutral" id="muscleChange">Sin cambios</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Composición Corporal -->
+            <div class="card">
+                <div class="card-title">🧬 Composición Corporal Estimada</div>
+                <div class="body-composition-result" id="bodyComposition" style="display: none;">
+                    <div class="composition-grid">
+                        <div class="composition-item">
+                            <div class="composition-value" id="muscleMass">--</div>
+                            <div class="composition-label">Masa Muscular (kg)</div>
+                            <div class="composition-bar">
+                                <div class="composition-fill fill-muscle" id="muscleBar" style="width: 0%"></div>
+                            </div>
+                        </div>
+                        <div class="composition-item">
+                            <div class="composition-value" id="fatMass">--</div>
+                            <div class="composition-label">Grasa (kg)</div>
+                            <div class="composition-bar">
+                                <div class="composition-fill fill-fat" id="fatBar" style="width: 0%"></div>
+                            </div>
+                        </div>
+                        <div class="composition-item">
+                            <div class="composition-value" id="otherMass">--</div>
+                            <div class="composition-label">Otros (kg)</div>
+                            <div class="composition-bar">
+                                <div class="composition-fill fill-other" id="otherBar" style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="noCompositionData" class="empty-state" style="padding: 2rem;">
+                    <div style="font-size: 2rem; margin-bottom: 0.5rem;">📝</div>
+                    <p>Registra tus medidas para ver la composición</p>
+                </div>
+            </div>
+
+            <!-- Formulario de Medidas -->
+            <div class="card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                    <div class="card-title" style="margin: 0;">📝 Nueva Toma de Medidas</div>
+                    <button class="btn btn-primary" onclick="openModal('measurementModal')">+ Registrar</button>
+                </div>
+                
+                <div id="recentMeasurements">
+                    <div class="empty-state">
+                        <div style="font-size: 3rem; margin-bottom: 1rem;">📏</div>
+                        <p>No hay registros de medidas</p>
+                        <p style="font-size: 0.9rem; margin-top: 0.5rem;">Registra tu primera toma para comenzar el seguimiento</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Fotos de Progreso -->
+            <div class="card">
+                <div class="card-title">📸 Fotos de Progreso</div>
+                <div class="photo-comparison" id="photoComparison">
+                    <div class="photo-slot" onclick="document.getElementById('photoFrontInput').click()">
+                        <div style="font-size: 2rem;">📷</div>
+                        <div style="font-size: 0.8rem; color: var(--text-muted);">Frente</div>
+                        <input type="file" id="photoFrontInput" accept="image/*" style="display: none;" onchange="handlePhotoUpload(event, 'front')">
+                        <div class="photo-label" id="photoFrontLabel">Toca para subir</div>
+                    </div>
+                    <div class="photo-slot" onclick="document.getElementById('photoSideInput').click()">
+                        <div style="font-size: 2rem;">📷</div>
+                        <div style="font-size: 0.8rem; color: var(--text-muted);">Perfil</div>
+                        <input type="file" id="photoSideInput" accept="image/*" style="display: none;" onchange="handlePhotoUpload(event, 'side')">
+                        <div class="photo-label" id="photoSideLabel">Toca para subir</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Progress Section -->
         <section id="progress" class="section">
             <div class="stats-grid">
                 <div class="stat-card">
@@ -1135,7 +1498,6 @@
                 </div>
             </div>
 
-            <!-- NUEVO: Selector de ejercicio para ver progreso -->
             <div class="card">
                 <div class="card-title">📈 Progreso por Ejercicio</div>
                 <select id="progressExerciseSelect" onchange="showExerciseProgress()" style="width: 100%; margin-bottom: 1rem; padding: 0.875rem; border-radius: 12px; border: 2px solid rgba(201, 169, 98, 0.2); background: rgba(0,0,0,0.3); color: white;">
@@ -1248,6 +1610,132 @@
         </div>
     </div>
 
+    <!-- NUEVO: Measurement Modal -->
+    <div class="modal-overlay" id="measurementModal">
+        <div class="modal" style="max-width: 700px;">
+            <div class="modal-header">
+                <div class="modal-title">📏 Nueva Toma de Medidas</div>
+                <button class="close-btn" onclick="closeModal('measurementModal')">&times;</button>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label>Fecha *</label>
+                    <input type="date" id="measureDate" value="">
+                </div>
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label>Hora</label>
+                    <input type="time" id="measureTime" value="">
+                </div>
+            </div>
+
+            <div class="card-title" style="margin-top: 1rem;">⚖️ Peso y Altura</div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                <div class="form-group">
+                    <label>Peso (kg) *</label>
+                    <input type="number" id="measureWeight" placeholder="Ej: 75.5" step="0.1" onchange="calculateIMC()">
+                </div>
+                <div class="form-group">
+                    <label>Altura (cm) *</label>
+                    <input type="number" id="measureHeight" placeholder="Ej: 175" onchange="calculateIMC()">
+                </div>
+            </div>
+            
+            <div id="imcPreview" style="display: none; text-align: center; margin-bottom: 1rem; padding: 1rem; background: rgba(0,0,0,0.2); border-radius: 12px;">
+                <div style="font-size: 1.5rem; font-weight: 700; color: var(--secondary);" id="imcPreviewValue">--</div>
+                <div class="imc-badge" id="imcPreviewCategory">--</div>
+            </div>
+
+            <div class="card-title">📐 Medidas Corporales (cm)</div>
+            <div class="measurements-grid">
+                <div class="measurement-input-group">
+                    <label>Cuello</label>
+                    <input type="number" id="measureNeck" placeholder="cm" step="0.1">
+                </div>
+                <div class="measurement-input-group">
+                    <label>Pecho</label>
+                    <input type="number" id="measureChest" placeholder="cm" step="0.1">
+                </div>
+                <div class="measurement-input-group">
+                    <label>Cintura</label>
+                    <input type="number" id="measureWaist" placeholder="cm" step="0.1">
+                </div>
+                <div class="measurement-input-group">
+                    <label>Cadera</label>
+                    <input type="number" id="measureHips" placeholder="cm" step="0.1">
+                </div>
+                <div class="measurement-input-group">
+                    <label>Brazo Izq</label>
+                    <input type="number" id="measureArmL" placeholder="cm" step="0.1">
+                </div>
+                <div class="measurement-input-group">
+                    <label>Brazo Der</label>
+                    <input type="number" id="measureArmR" placeholder="cm" step="0.1">
+                </div>
+                <div class="measurement-input-group">
+                    <label>Muslo Izq</label>
+                    <input type="number" id="measureThighL" placeholder="cm" step="0.1">
+                </div>
+                <div class="measurement-input-group">
+                    <label>Muslo Der</label>
+                    <input type="number" id="measureThighR" placeholder="cm" step="0.1">
+                </div>
+                <div class="measurement-input-group">
+                    <label>Pantorrilla Izq</label>
+                    <input type="number" id="measureCalfL" placeholder="cm" step="0.1">
+                </div>
+                <div class="measurement-input-group">
+                    <label>Pantorrilla Der</label>
+                    <input type="number" id="measureCalfR" placeholder="cm" step="0.1">
+                </div>
+            </div>
+
+            <div class="card-title">📏 Pliegues Cutáneos (mm)</div>
+            <div class="pliegues-grid">
+                <div class="pliegue-input">
+                    <label>Abdominal</label>
+                    <input type="number" id="pliegueAbdominal" placeholder="mm" step="0.5" onchange="calculateBodyFat()">
+                </div>
+                <div class="pliegue-input">
+                    <label>Tríceps</label>
+                    <input type="number" id="pliegueTriceps" placeholder="mm" step="0.5" onchange="calculateBodyFat()">
+                </div>
+                <div class="pliegue-input">
+                    <label>Pectoral</label>
+                    <input type="number" id="plieguePectoral" placeholder="mm" step="0.5" onchange="calculateBodyFat()">
+                </div>
+                <div class="pliegue-input">
+                    <label>Subescapular</label>
+                    <input type="number" id="pliegueSubescapular" placeholder="mm" step="0.5" onchange="calculateBodyFat()">
+                </div>
+                <div class="pliegue-input">
+                    <label>Suprailíaco</label>
+                    <input type="number" id="pliegueSuprailiac" placeholder="mm" step="0.5" onchange="calculateBodyFat()">
+                </div>
+                <div class="pliegue-input">
+                    <label>Muslo</label>
+                    <input type="number" id="pliegueThigh" placeholder="mm" step="0.5" onchange="calculateBodyFat()">
+                </div>
+            </div>
+
+            <div id="bodyFatPreview" style="display: none; margin-bottom: 1rem;">
+                <div class="body-composition-result" style="margin-top: 0;">
+                    <div style="text-align: center; margin-bottom: 0.5rem;">
+                        <span style="color: var(--text-muted);">Grasa estimada:</span>
+                        <span style="font-size: 1.5rem; font-weight: 700; color: var(--secondary); margin-left: 0.5rem;" id="bodyFatPreviewValue">--%</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Notas adicionales</label>
+                <textarea id="measureNotes" placeholder="¿Cómo te sentiste? ¿Dormiste bien? ¿Estresado?..." style="min-height: 80px;"></textarea>
+            </div>
+
+            <button class="btn btn-primary btn-full" onclick="saveMeasurement()" id="saveMeasurementBtn">💾 Guardar Medidas</button>
+        </div>
+    </div>
+
     <!-- Exercise Detail Modal -->
     <div class="modal-overlay" id="exerciseDetailModal">
         <div class="modal">
@@ -1259,7 +1747,7 @@
         </div>
     </div>
 
-    <!-- NUEVO: Exercise Progress Detail Modal -->
+    <!-- Exercise Progress Modal -->
     <div class="modal-overlay" id="exerciseProgressModal">
         <div class="modal" style="max-width: 700px;">
             <div class="modal-header">
@@ -1312,7 +1800,8 @@
             where,
             doc,
             deleteDoc,
-            serverTimestamp
+            serverTimestamp,
+            orderBy
         } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
         import { 
             getStorage, 
@@ -1346,7 +1835,7 @@
                     isDefault: true,
                     difficulty: 'intermedio',
                     description: 'Acuéstate en un banco plano, agarra la barra con las manos a la anchura de los hombros, baja controladamente hasta el pecho y empuja hacia arriba.',
-                    equipment: ['Barra', 'Banco'],
+                    equipment: ['Barra', 'Rack'],
                     imageUrl: ''
                 },
                 { 
@@ -1418,6 +1907,7 @@
             ],
             routines: [],
             workouts: [],
+            measurements: [],
             currentWorkout: null
         };
 
@@ -1494,7 +1984,8 @@
                 'routines': 1,
                 'workout': 2,
                 'exercises': 3,
-                'progress': 4
+                'measurements': 4,
+                'progress': 5
             };
             if (tabs[sectionMap[sectionId]]) {
                 tabs[sectionMap[sectionId]].classList.add('active');
@@ -1503,6 +1994,7 @@
             if (sectionId === 'dashboard') renderDashboard();
             if (sectionId === 'routines') renderRoutines();
             if (sectionId === 'exercises') renderExercises();
+            if (sectionId === 'measurements') renderMeasurements();
             if (sectionId === 'progress') {
                 renderProgress();
                 updateProgressExerciseSelect();
@@ -1518,6 +2010,9 @@
             }
             if (modalId === 'exerciseModal') {
                 resetExerciseForm();
+            }
+            if (modalId === 'measurementModal') {
+                resetMeasurementForm();
             }
         };
 
@@ -1554,6 +2049,189 @@
                 `;
             };
             reader.readAsDataURL(file);
+        };
+
+        // NUEVO: Funciones para medidas corporales
+        window.calculateIMC = () => {
+            const weight = parseFloat(document.getElementById('measureWeight').value);
+            const height = parseFloat(document.getElementById('measureHeight').value);
+            
+            if (weight && height) {
+                const heightM = height / 100;
+                const imc = weight / (heightM * heightM);
+                const imcValue = imc.toFixed(1);
+                
+                let category = '';
+                let className = '';
+                
+                if (imc < 18.5) {
+                    category = 'Bajo peso';
+                    className = 'imc-bajo';
+                } else if (imc < 25) {
+                    category = 'Normal';
+                    className = 'imc-normal';
+                } else if (imc < 30) {
+                    category = 'Sobrepeso';
+                    className = 'imc-sobrepeso';
+                } else {
+                    category = 'Obesidad';
+                    className = 'imc-obesidad';
+                }
+                
+                const preview = document.getElementById('imcPreview');
+                preview.style.display = 'block';
+                document.getElementById('imcPreviewValue').textContent = imcValue;
+                const catElement = document.getElementById('imcPreviewCategory');
+                catElement.textContent = category;
+                catElement.className = 'imc-badge ' + className;
+            }
+        };
+
+        window.calculateBodyFat = () => {
+            const abdominal = parseFloat(document.getElementById('pliegueAbdominal').value) || 0;
+            const triceps = parseFloat(document.getElementById('pliegueTriceps').value) || 0;
+            const pectoral = parseFloat(document.getElementById('plieguePectoral').value) || 0;
+            const subescapular = parseFloat(document.getElementById('pliegueSubescapular').value) || 0;
+            const suprailiac = parseFloat(document.getElementById('pliegueSuprailiac').value) || 0;
+            const thigh = parseFloat(document.getElementById('pliegueThigh').value) || 0;
+            
+            const sum = abdominal + triceps + pectoral + subescapular + suprailiac + thigh;
+            
+            if (sum > 0) {
+                // Fórmula de Jackson-Pollock simplificada (7 pliegues)
+                const bodyFat = (0.097 * sum) + 3.64; // Simplificado para hombres
+                
+                const preview = document.getElementById('bodyFatPreview');
+                preview.style.display = 'block';
+                document.getElementById('bodyFatPreviewValue').textContent = bodyFat.toFixed(1) + '%';
+            }
+        };
+
+        window.saveMeasurement = async () => {
+            const date = document.getElementById('measureDate').value;
+            const time = document.getElementById('measureTime').value;
+            const weight = parseFloat(document.getElementById('measureWeight').value);
+            const height = parseFloat(document.getElementById('measureHeight').value);
+            
+            if (!date || !weight || !height) {
+                showToast('❌ Completa fecha, peso y altura', true);
+                return;
+            }
+            
+            const btn = document.getElementById('saveMeasurementBtn');
+            btn.disabled = true;
+            btn.textContent = 'Guardando...';
+            
+            const measurements = {
+                neck: parseFloat(document.getElementById('measureNeck').value) || 0,
+                chest: parseFloat(document.getElementById('measureChest').value) || 0,
+                waist: parseFloat(document.getElementById('measureWaist').value) || 0,
+                hips: parseFloat(document.getElementById('measureHips').value) || 0,
+                armL: parseFloat(document.getElementById('measureArmL').value) || 0,
+                armR: parseFloat(document.getElementById('measureArmR').value) || 0,
+                thighL: parseFloat(document.getElementById('measureThighL').value) || 0,
+                thighR: parseFloat(document.getElementById('measureThighR').value) || 0,
+                calfL: parseFloat(document.getElementById('measureCalfL').value) || 0,
+                calfR: parseFloat(document.getElementById('measureCalfR').value) || 0
+            };
+            
+            const pliegues = {
+                abdominal: parseFloat(document.getElementById('pliegueAbdominal').value) || 0,
+                triceps: parseFloat(document.getElementById('pliegueTriceps').value) || 0,
+                pectoral: parseFloat(document.getElementById('plieguePectoral').value) || 0,
+                subescapular: parseFloat(document.getElementById('pliegueSubescapular').value) || 0,
+                suprailiac: parseFloat(document.getElementById('pliegueSuprailiac').value) || 0,
+                thigh: parseFloat(document.getElementById('pliegueThigh').value) || 0
+            };
+            
+            // Calcular IMC
+            const heightM = height / 100;
+            const imc = weight / (heightM * heightM);
+            
+            // Calcular grasa corporal (fórmula simplificada)
+            const sumPliegues = Object.values(pliegues).reduce((a, b) => a + b, 0);
+            const bodyFat = sumPliegues > 0 ? (0.097 * sumPliegues) + 3.64 : 0;
+            
+            // Calcular masa muscular estimada
+            const fatMass = (bodyFat / 100) * weight;
+            const muscleMass = weight - fatMass - (weight * 0.15); // 15% otros tejidos
+            
+            const measurementData = {
+                date,
+                time: time || new Date().toLocaleTimeString('es-ES', {hour: '2-digit', minute:'2-digit'}),
+                weight,
+                height,
+                imc: parseFloat(imc.toFixed(1)),
+                measurements,
+                pliegues,
+                bodyFat: parseFloat(bodyFat.toFixed(1)),
+                muscleMass: parseFloat(muscleMass.toFixed(1)),
+                fatMass: parseFloat(fatMass.toFixed(1)),
+                notes: document.getElementById('measureNotes').value,
+                createdAt: new Date().toISOString()
+            };
+            
+            try {
+                const id = await saveToFirebase('measurements', measurementData);
+                if (id) {
+                    measurementData.id = id;
+                    data.measurements.unshift(measurementData);
+                    closeModal('measurementModal');
+                    renderMeasurements();
+                    showToast('✅ Medidas guardadas correctamente');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showToast('❌ Error al guardar', true);
+            } finally {
+                btn.disabled = false;
+                btn.textContent = '💾 Guardar Medidas';
+            }
+        };
+
+        window.handlePhotoUpload = async (event, type) => {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            if (file.size > 5 * 1024 * 1024) {
+                showToast('❌ La foto debe ser menor a 5MB', true);
+                return;
+            }
+            
+            try {
+                showToast('📤 Subiendo foto...');
+                const fileName = `photos/${userId}/${type}_${Date.now()}_${file.name}`;
+                const storageRef = ref(storage, fileName);
+                const snapshot = await uploadBytes(storageRef, file);
+                const downloadURL = await getDownloadURL(snapshot.ref);
+                
+                // Actualizar UI
+                const slot = type === 'front' ? 
+                    document.querySelector('#photoFrontInput').closest('.photo-slot') :
+                    document.querySelector('#photoSideInput').closest('.photo-slot');
+                
+                slot.classList.add('has-photo');
+                slot.innerHTML = `
+                    <img src="${downloadURL}" alt="Foto ${type}">
+                    <div class="photo-label">${type === 'front' ? 'Frente' : 'Perfil'} - ${new Date().toLocaleDateString()}</div>
+                    <input type="file" id="photo${type === 'front' ? 'Front' : 'Side'}Input" accept="image/*" style="display: none;" onchange="handlePhotoUpload(event, '${type}')">
+                `;
+                
+                showToast('✅ Foto subida correctamente');
+            } catch (error) {
+                console.error('Error subiendo foto:', error);
+                showToast('❌ Error al subir foto', true);
+            }
+        };
+
+        window.deleteMeasurement = async (id) => {
+            if (!confirm('¿Eliminar este registro de medidas?')) return;
+            
+            if (await deleteFromFirebase('measurements', id)) {
+                data.measurements = data.measurements.filter(m => m.id !== id);
+                renderMeasurements();
+                showToast('🗑️ Registro eliminado');
+            }
         };
 
         window.addRoutineExercise = () => {
@@ -1826,13 +2504,11 @@
             modal.classList.add('active');
         };
 
-        // NUEVA FUNCIÓN: Mostrar progreso en el modal de detalle
         window.showExerciseProgressDetail = (exerciseId) => {
             closeModal('exerciseDetailModal');
             showExerciseProgressModal(exerciseId);
         };
 
-        // NUEVA FUNCIÓN: Mostrar progreso desde el selector de progreso
         window.showExerciseProgress = () => {
             const exerciseId = document.getElementById('progressExerciseSelect').value;
             if (!exerciseId) {
@@ -1847,12 +2523,10 @@
             showExerciseProgressModal(exerciseId);
         };
 
-        // NUEVA FUNCIÓN: Mostrar modal de progreso completo
         function showExerciseProgressModal(exerciseId) {
             const exercise = data.exercises.find(e => e.id === exerciseId);
             if (!exercise) return;
 
-            // Buscar todos los registros de este ejercicio en todos los workouts
             const history = [];
             data.workouts.forEach(workout => {
                 workout.exercises.forEach(ex => {
@@ -1872,18 +2546,13 @@
                 });
             });
 
-            // Ordenar por fecha (más reciente primero)
             history.sort((a, b) => b.date - a.date);
 
-                        // Calcular PR (máximo peso levantado)
             const pr = history.length > 0 ? Math.max(...history.map(h => h.weight)) : 0;
-            
-            // Calcular estadísticas
             const oneRM = history.length > 0 ? Math.max(...history.map(h => h.weight * (1 + h.reps/30))) : 0;
             const avgWeight = history.length > 0 ? (history.reduce((sum, h) => sum + h.weight, 0) / history.length).toFixed(1) : 0;
             const totalSets = history.length;
             
-            // Calcular tendencia (últimos 3 vs anteriores 3)
             let trend = 'same';
             if (history.length >= 6) {
                 const recent = history.slice(0, 3).reduce((sum, h) => sum + h.weight, 0) / 3;
@@ -1896,7 +2565,6 @@
             const content = document.getElementById('exerciseProgressModalContent');
             document.getElementById('progressModalTitle').textContent = `📈 ${exercise.name}`;
 
-            // Generar gráfica SVG simple
             let chartHtml = '';
             if (history.length >= 2) {
                 const weights = history.map(h => h.weight).reverse();
@@ -1940,7 +2608,6 @@
                 `;
             }
 
-            // Generar lista de historial
             const historyHtml = history.slice(0, 10).map((h, index) => {
                 const isPR = h.weight === pr && index === history.findIndex(x => x.weight === pr);
                 const dateStr = h.date.toLocaleDateString('es-ES', { day: 'numeric', month: 'short' });
@@ -1959,27 +2626,22 @@
                 `;
             }).join('');
 
-            // Estadísticas de comparación
             const trendIcon = trend === 'up' ? '📈' : trend === 'down' ? '📉' : '➡️';
             const trendClass = trend === 'up' ? 'trend-up' : trend === 'down' ? 'trend-down' : 'trend-same';
 
             content.innerHTML = `
-                <!-- PR Badge -->
                 <div class="pr-badge">
                     <div class="pr-value">${pr} kg</div>
                     <div class="pr-label">🏆 Personal Record (PR)</div>
                 </div>
 
-                <!-- Estimación 1RM -->
                 <div style="background: rgba(201, 169, 98, 0.1); border-radius: 12px; padding: 1rem; margin-bottom: 1rem; text-align: center;">
                     <div style="font-size: 1.5rem; font-weight: 700; color: var(--secondary);">${oneRM.toFixed(1)} kg</div>
                     <div style="font-size: 0.85rem; color: var(--text-muted);">Estimación 1RM máximo</div>
                 </div>
 
-                <!-- Gráfica -->
                 ${chartHtml}
 
-                <!-- Estadísticas -->
                 <div class="stats-comparison">
                     <div class="comparison-item">
                         <div class="comparison-value ${trendClass}">${trendIcon} ${avgWeight}</div>
@@ -1995,7 +2657,6 @@
                     </div>
                 </div>
 
-                <!-- Historial -->
                 <div class="card-title" style="margin-top: 1.5rem;">📋 Historial Reciente</div>
                 <div class="history-list">
                     ${historyHtml || '<p style="text-align: center; color: var(--text-muted);">Sin registros aún</p>'}
@@ -2031,6 +2692,7 @@
                 userId = null;
                 data.routines = [];
                 data.workouts = [];
+                data.measurements = [];
                 data.exercises = data.exercises.filter(e => e.isDefault);
                 
                 document.getElementById('appContainer').classList.add('hidden');
@@ -2062,6 +2724,15 @@
                 data.workouts = workoutsSnap.docs
                     .map(d => ({ id: d.id, ...d.data() }))
                     .sort((a, b) => new Date(b.startTime) - new Date(a.startTime));
+
+                // Cargar medidas
+                const measurementsQuery = query(
+                    collection(db, 'measurements'), 
+                    where('userId', '==', userId),
+                    orderBy('date', 'desc')
+                );
+                const measurementsSnap = await getDocs(measurementsQuery);
+                data.measurements = measurementsSnap.docs.map(d => ({ id: d.id, ...d.data() }));
 
                 updateSyncStatus(true, 'Conectado');
                 renderAll();
@@ -2145,6 +2816,33 @@
             `;
         }
 
+        function resetMeasurementForm() {
+            const now = new Date();
+            document.getElementById('measureDate').value = now.toISOString().split('T')[0];
+            document.getElementById('measureTime').value = now.toTimeString().slice(0, 5);
+            document.getElementById('measureWeight').value = '';
+            document.getElementById('measureHeight').value = '';
+            document.getElementById('measureNeck').value = '';
+            document.getElementById('measureChest').value = '';
+            document.getElementById('measureWaist').value = '';
+            document.getElementById('measureHips').value = '';
+            document.getElementById('measureArmL').value = '';
+            document.getElementById('measureArmR').value = '';
+            document.getElementById('measureThighL').value = '';
+            document.getElementById('measureThighR').value = '';
+            document.getElementById('measureCalfL').value = '';
+            document.getElementById('measureCalfR').value = '';
+            document.getElementById('pliegueAbdominal').value = '';
+            document.getElementById('pliegueTriceps').value = '';
+            document.getElementById('plieguePectoral').value = '';
+            document.getElementById('pliegueSubescapular').value = '';
+            document.getElementById('pliegueSuprailiac').value = '';
+            document.getElementById('pliegueThigh').value = '';
+            document.getElementById('measureNotes').value = '';
+            document.getElementById('imcPreview').style.display = 'none';
+            document.getElementById('bodyFatPreview').style.display = 'none';
+        }
+
         function startWorkout(routine) {
             data.currentWorkout = {
                 routineId: routine.id,
@@ -2197,7 +2895,139 @@
             renderDashboard();
             renderRoutines();
             renderExercises();
+            renderMeasurements();
             renderProgress();
+        }
+
+        // NUEVO: Renderizar medidas
+        function renderMeasurements() {
+            const container = document.getElementById('recentMeasurements');
+            
+            if (data.measurements.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div style="font-size: 3rem; margin-bottom: 1rem;">📏</div>
+                        <p>No hay registros de medidas</p>
+                        <p style="font-size: 0.9rem; margin-top: 0.5rem;">Registra tu primera toma para comenzar el seguimiento</p>
+                    </div>
+                `;
+                
+                // Resetear stats
+                document.getElementById('currentWeight').textContent = '--';
+                document.getElementById('currentIMC').textContent = '--';
+                document.getElementById('currentFat').textContent = '--%';
+                document.getElementById('currentMuscle').textContent = '--%';
+                document.getElementById('imcCategory').textContent = '--';
+                document.getElementById('imcCategory').className = 'imc-badge';
+                document.getElementById('weightChange').textContent = 'Sin cambios';
+                document.getElementById('weightChange').className = 'body-stat-change change-neutral';
+                document.getElementById('fatChange').textContent = 'Sin cambios';
+                document.getElementById('fatChange').className = 'body-stat-change change-neutral';
+                document.getElementById('muscleChange').textContent = 'Sin cambios';
+                document.getElementById('muscleChange').className = 'body-stat-change change-neutral';
+                document.getElementById('bodyComposition').style.display = 'none';
+                document.getElementById('noCompositionData').style.display = 'block';
+                return;
+            }
+            
+            const latest = data.measurements[0];
+            const previous = data.measurements[1];
+            
+            // Actualizar stats principales
+            document.getElementById('currentWeight').textContent = latest.weight.toFixed(1);
+            document.getElementById('currentIMC').textContent = latest.imc;
+            document.getElementById('currentFat').textContent = latest.bodyFat ? latest.bodyFat.toFixed(1) + '%' : '--%';
+            document.getElementById('currentMuscle').textContent = latest.muscleMass ? ((latest.muscleMass / latest.weight) * 100).toFixed(1) + '%' : '--%';
+            
+            // Categoría IMC
+            let imcClass = '';
+            let imcText = '';
+            if (latest.imc < 18.5) {
+                imcClass = 'imc-bajo';
+                imcText = 'Bajo peso';
+            } else if (latest.imc < 25) {
+                imcClass = 'imc-normal';
+                imcText = 'Normal';
+            } else if (latest.imc < 30) {
+                imcClass = 'imc-sobrepeso';
+                imcText = 'Sobrepeso';
+            } else {
+                imcClass = 'imc-obesidad';
+                imcText = 'Obesidad';
+            }
+            document.getElementById('imcCategory').textContent = imcText;
+            document.getElementById('imcCategory').className = 'imc-badge ' + imcClass;
+            
+            // Cambios
+            if (previous) {
+                const weightDiff = latest.weight - previous.weight;
+                const fatDiff = latest.bodyFat - previous.bodyFat;
+                const muscleDiff = ((latest.muscleMass / latest.weight) - (previous.muscleMass / previous.weight)) * 100;
+                
+                const weightChangeEl = document.getElementById('weightChange');
+                weightChangeEl.textContent = (weightDiff > 0 ? '+' : '') + weightDiff.toFixed(1) + ' kg';
+                weightChangeEl.className = 'body-stat-change ' + (weightDiff < 0 ? 'change-positive' : weightDiff > 0 ? 'change-negative' : 'change-neutral');
+                
+                const fatChangeEl = document.getElementById('fatChange');
+                fatChangeEl.textContent = (fatDiff > 0 ? '+' : '') + fatDiff.toFixed(1) + '%';
+                fatChangeEl.className = 'body-stat-change ' + (fatDiff < 0 ? 'change-positive' : fatDiff > 0 ? 'change-negative' : 'change-neutral');
+                
+                const muscleChangeEl = document.getElementById('muscleChange');
+                muscleChangeEl.textContent = (muscleDiff > 0 ? '+' : '') + muscleDiff.toFixed(1) + '%';
+                muscleChangeEl.className = 'body-stat-change ' + (muscleDiff > 0 ? 'change-positive' : muscleDiff < 0 ? 'change-negative' : 'change-neutral');
+            }
+            
+            // Composición corporal
+            if (latest.bodyFat > 0) {
+                document.getElementById('bodyComposition').style.display = 'block';
+                document.getElementById('noCompositionData').style.display = 'none';
+                
+                document.getElementById('muscleMass').textContent = latest.muscleMass.toFixed(1);
+                document.getElementById('fatMass').textContent = latest.fatMass.toFixed(1);
+                document.getElementById('otherMass').textContent = (latest.weight - latest.muscleMass - latest.fatMass).toFixed(1);
+                
+                const musclePercent = (latest.muscleMass / latest.weight) * 100;
+                const fatPercent = (latest.fatMass / latest.weight) * 100;
+                const otherPercent = 100 - musclePercent - fatPercent;
+                
+                document.getElementById('muscleBar').style.width = musclePercent + '%';
+                document.getElementById('fatBar').style.width = fatPercent + '%';
+                document.getElementById('otherBar').style.width = otherPercent + '%';
+            }
+            
+            // Lista de historial
+            container.innerHTML = data.measurements.slice(0, 5).map(m => {
+                const date = new Date(m.date);
+                const dateStr = date.toLocaleDateString('es-ES', { day: 'numeric', month: 'short', year: 'numeric' });
+                
+                return `
+                    <div class="measurement-history-item">
+                        <div>
+                            <div class="measurement-date">${dateStr}</div>
+                            <div style="font-size: 0.8rem; color: var(--text-muted);">${m.time}</div>
+                        </div>
+                        <div class="measurement-values">
+                            <div class="measurement-value-pair">
+                                <div class="measurement-value-number">${m.weight.toFixed(1)}</div>
+                                <div class="measurement-value-label">kg</div>
+                            </div>
+                            ${m.bodyFat ? `
+                                <div class="measurement-value-pair">
+                                    <div class="measurement-value-number">${m.bodyFat.toFixed(1)}%</div>
+                                    <div class="measurement-value-label">grasa</div>
+                                </div>
+                            ` : ''}
+                            ${m.measurements.waist ? `
+                                <div class="measurement-value-pair">
+                                    <div class="measurement-value-number">${m.measurements.waist}</div>
+                                    <div class="measurement-value-label">cintura</div>
+                                </div>
+                            ` : ''}
+                        </div>
+                        <button class="btn btn-danger" onclick="deleteMeasurement('${m.id}')" style="padding: 0.3rem 0.6rem; font-size: 0.75rem;">🗑️</button>
+                    </div>
+                `;
+            }).join('');
         }
 
         function renderDashboard() {
@@ -2340,12 +3170,10 @@
             }).join('');
         }
 
-        // NUEVA FUNCIÓN: Actualizar selector de ejercicios en progreso
         function updateProgressExerciseSelect() {
             const select = document.getElementById('progressExerciseSelect');
             select.innerHTML = '<option value="">-- Seleccionar ejercicio --</option>';
             
-            // Agrupar por grupo muscular
             const byMuscle = {};
             data.exercises.forEach(e => {
                 if (!byMuscle[e.muscle]) byMuscle[e.muscle] = [];
