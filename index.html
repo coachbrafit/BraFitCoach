@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> BraFitCoach </title>
+    <title> BraFit-Coach </title>
     <style>
         * {
             margin: 0;
@@ -2708,42 +2708,62 @@
             if (!userId) return;
             
             updateSyncStatus(true, 'Cargando...');
+            console.log('🔍 Iniciando carga de datos para userId:', userId);
             
             try {
+                // 1. Cargar ejercicios (SOLO where, sin orderBy)
+                console.log('📥 Cargando ejercicios...');
                 const exercisesQuery = query(collection(db, 'exercises'), where('userId', '==', userId));
                 const exercisesSnap = await getDocs(exercisesQuery);
+                console.log('✅ Ejercicios cargados:', exercisesSnap.docs.length);
                 const userExercises = exercisesSnap.docs.map(d => ({ id: d.id, ...d.data() }));
                 data.exercises = [...data.exercises.filter(e => e.isDefault), ...userExercises];
-
+        
+                // 2. Cargar rutinas (SOLO where, sin orderBy)
+                console.log('📥 Cargando rutinas...');
                 const routinesQuery = query(collection(db, 'routines'), where('userId', '==', userId));
                 const routinesSnap = await getDocs(routinesQuery);
+                console.log('✅ Rutinas cargadas:', routinesSnap.docs.length);
                 data.routines = routinesSnap.docs.map(d => ({ id: d.id, ...d.data() }));
-
+        
+                // 3. Cargar entrenamientos (SOLO where, sin orderBy)
+                console.log('📥 Cargando workouts...');
                 const workoutsQuery = query(collection(db, 'workouts'), where('userId', '==', userId));
                 const workoutsSnap = await getDocs(workoutsQuery);
+                console.log('✅ Workouts cargados:', workoutsSnap.docs.length);
+                // Ordenar en el cliente con JavaScript
                 data.workouts = workoutsSnap.docs
                     .map(d => ({ id: d.id, ...d.data() }))
                     .sort((a, b) => new Date(b.startTime) - new Date(a.startTime));
-
-                // Cargar medidas
+        
+                // 4. Cargar medidas (SOLO where, ELIMINADO orderBy que causaba el error)
+                console.log('📥 Cargando medidas...');
                 const measurementsQuery = query(
                     collection(db, 'measurements'), 
-                    where('userId', '==', userId),
-                    orderBy('date', 'desc')
+                    where('userId', '==', userId)
+                    // ELIMINADO: orderBy('date', 'desc') - causaba el error de índice
                 );
                 const measurementsSnap = await getDocs(measurementsQuery);
-                data.measurements = measurementsSnap.docs.map(d => ({ id: d.id, ...d.data() }));
-
+                console.log('✅ Medidas cargadas:', measurementsSnap.docs.length);
+                // Ordenar en el cliente con JavaScript
+                data.measurements = measurementsSnap.docs
+                    .map(d => ({ id: d.id, ...d.data() }))
+                    .sort((a, b) => new Date(b.date) - new Date(a.date));
+        
                 updateSyncStatus(true, 'Conectado');
                 renderAll();
-                showToast('✅ Datos cargados');
+                showToast('✅ Datos cargados correctamente');
+                console.log('🎉 Carga completada exitosamente');
                 
             } catch (error) {
-                console.error('Error general:', error);
+                console.error('❌ ERROR en loadUserData:', error);
+                console.error('Código:', error.code);
+                console.error('Mensaje:', error.message);
                 updateSyncStatus(false, 'Error');
-                showToast('❌ Error cargando datos', true);
+                showToast('❌ Error cargando datos: ' + error.message, true);
             }
         }
+        
 
         async function saveToFirebase(collectionName, item) {
             if (!userId) {
