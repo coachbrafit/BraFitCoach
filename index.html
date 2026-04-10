@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> BraFit-Coach </title>
+    <title> BraFitCoach </title>
     <style>
         * {
             margin: 0;
@@ -1380,6 +1380,33 @@
 
         <!-- NUEVO: Measurements Section -->
         <section id="measurements" class="section">
+            <!-- Gráfica de Progreso -->
+            <div class="card">
+                <div class="card-title">📈 Evolución Corporal</div>
+                <div class="chart-container" style="padding: 1.5rem;">
+                    <svg id="bodyProgressChart" class="chart-svg" viewBox="0 0 800 300" style="height: 250px;">
+                        <!-- Se genera dinámicamente con JavaScript -->
+                        <text x="400" y="150" text-anchor="middle" fill="var(--text-muted)" font-size="14">
+                            Registra tus medidas para ver el progreso
+                        </text>
+                    </svg>
+                    <div style="display: flex; justify-content: center; gap: 2rem; margin-top: 1rem; flex-wrap: wrap;">
+                        <div style="display: flex; align-items: center; gap: 0.5rem;">
+                            <div style="width: 20px; height: 3px; background: var(--secondary); border-radius: 2px;"></div>
+                            <span style="font-size: 0.85rem; color: var(--text-muted);">Peso (kg)</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 0.5rem;">
+                            <div style="width: 20px; height: 3px; background: #ff9800; border-radius: 2px;"></div>
+                            <span style="font-size: 0.85rem; color: var(--text-muted);">Grasa (%)</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 0.5rem;">
+                            <div style="width: 20px; height: 3px; background: #2196f3; border-radius: 2px;"></div>
+                            <span style="font-size: 0.85rem; color: var(--text-muted);">Cintura (cm)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        
             <!-- Resumen Corporal -->
             <div class="card">
                 <div class="card-title">📊 Resumen Corporal</div>
@@ -1406,7 +1433,7 @@
                     </div>
                 </div>
             </div>
-
+        
             <!-- Composición Corporal -->
             <div class="card">
                 <div class="card-title">🧬 Composición Corporal Estimada</div>
@@ -1440,7 +1467,7 @@
                     <p>Registra tus medidas para ver la composición</p>
                 </div>
             </div>
-
+        
             <!-- Formulario de Medidas -->
             <div class="card">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
@@ -1456,7 +1483,7 @@
                     </div>
                 </div>
             </div>
-
+        
             <!-- Fotos de Progreso -->
             <div class="card">
                 <div class="card-title">📸 Fotos de Progreso</div>
@@ -2947,6 +2974,13 @@
                 document.getElementById('muscleChange').className = 'body-stat-change change-neutral';
                 document.getElementById('bodyComposition').style.display = 'none';
                 document.getElementById('noCompositionData').style.display = 'block';
+                
+                // Resetear gráfica
+                document.getElementById('bodyProgressChart').innerHTML = `
+                    <text x="400" y="150" text-anchor="middle" fill="var(--text-muted)" font-size="14">
+                        Registra tus medidas para ver el progreso
+                    </text>
+                `;
                 return;
             }
             
@@ -3015,6 +3049,9 @@
                 document.getElementById('otherBar').style.width = otherPercent + '%';
             }
             
+            // ===== NUEVO: Generar gráfica de progreso =====
+            renderBodyProgressChart();
+            
             // Lista de historial
             container.innerHTML = data.measurements.slice(0, 5).map(m => {
                 const date = new Date(m.date);
@@ -3049,7 +3086,113 @@
                 `;
             }).join('');
         }
-
+        
+        // ===== NUEVA FUNCIÓN: Renderizar gráfica de progreso corporal =====
+        function renderBodyProgressChart() {
+            const svg = document.getElementById('bodyProgressChart');
+            const measurements = [...data.measurements].sort((a, b) => new Date(a.date) - new Date(b.date)); // Orden cronológico
+            
+            if (measurements.length < 2) {
+                svg.innerHTML = `
+                    <text x="400" y="150" text-anchor="middle" fill="var(--text-muted)" font-size="14">
+                        Necesitas al menos 2 registros para ver la gráfica de evolución
+                    </text>
+                `;
+                return;
+            }
+            
+            const width = 800;
+            const height = 300;
+            const padding = { top: 40, right: 60, bottom: 60, left: 60 };
+            const chartWidth = width - padding.left - padding.right;
+            const chartHeight = height - padding.top - padding.bottom;
+            
+            // Preparar datos
+            const dates = measurements.map(m => new Date(m.date));
+            const weights = measurements.map(m => m.weight);
+            const bodyFats = measurements.map(m => m.bodyFat || 0);
+            const waists = measurements.map(m => m.measurements?.waist || 0);
+            
+            // Encontrar rangos
+            const minWeight = Math.min(...weights) * 0.98;
+            const maxWeight = Math.max(...weights) * 1.02;
+            const minFat = Math.min(...bodyFats.filter(f => f > 0)) * 0.9 || 0;
+            const maxFat = Math.max(...bodyFats) * 1.1 || 100;
+            const minWaist = Math.min(...waists.filter(w => w > 0)) * 0.9 || 0;
+            const maxWaist = Math.max(...waists) * 1.1 || 200;
+            
+            // Funciones de escala
+            const xScale = (index) => padding.left + (index / (measurements.length - 1)) * chartWidth;
+            const yScaleWeight = (val) => padding.top + chartHeight - ((val - minWeight) / (maxWeight - minWeight)) * chartHeight;
+            const yScaleFat = (val) => padding.top + chartHeight - ((val - minFat) / (maxFat - minFat)) * chartHeight;
+            const yScaleWaist = (val) => padding.top + chartHeight - ((val - minWaist) / (maxWaist - minWaist)) * chartHeight;
+            
+            // Generar puntos para líneas
+            const weightPoints = weights.map((w, i) => `${xScale(i)},${yScaleWeight(w)}`).join(' ');
+            const fatPoints = bodyFats.map((f, i) => f > 0 ? `${xScale(i)},${yScaleFat(f)}` : '').filter(Boolean).join(' ');
+            const waistPoints = waists.map((w, i) => w > 0 ? `${xScale(i)},${yScaleWaist(w)}` : '').filter(Boolean).join(' ');
+            
+            // Generar SVG
+            let svgContent = `
+                <!-- Fondo de cuadrícula -->
+                <defs>
+                    <pattern id="grid" width="40" height="30" patternUnits="userSpaceOnUse">
+                        <path d="M 40 0 L 0 0 0 30" fill="none" stroke="rgba(201,169,98,0.1)" stroke-width="1"/>
+                    </pattern>
+                </defs>
+                <rect width="100%" height="100%" fill="url(#grid)" />
+                
+                <!-- Ejes -->
+                <line x1="${padding.left}" y1="${padding.top}" x2="${padding.left}" y2="${height - padding.bottom}" stroke="rgba(201,169,98,0.3)" stroke-width="2"/>
+                <line x1="${padding.left}" y1="${height - padding.bottom}" x2="${width - padding.right}" y2="${height - padding.bottom}" stroke="rgba(201,169,98,0.3)" stroke-width="2"/>
+            `;
+            
+            // Línea de PESO (dorada)
+            if (weights.length > 1) {
+                svgContent += `
+                    <polyline fill="none" stroke="var(--secondary)" stroke-width="3" points="${weightPoints}" stroke-linecap="round" stroke-linejoin="round"/>
+                    ${weights.map((w, i) => `<circle cx="${xScale(i)}" cy="${yScaleWeight(w)}" r="5" fill="var(--secondary)" stroke="var(--darker)" stroke-width="2"/>`).join('')}
+                `;
+            }
+            
+            // Línea de GRASA (naranja)
+            if (bodyFats.filter(f => f > 0).length > 1) {
+                svgContent += `
+                    <polyline fill="none" stroke="#ff9800" stroke-width="3" points="${fatPoints}" stroke-linecap="round" stroke-linejoin="round"/>
+                    ${bodyFats.map((f, i) => f > 0 ? `<circle cx="${xScale(i)}" cy="${yScaleFat(f)}" r="5" fill="#ff9800" stroke="var(--darker)" stroke-width="2"/>` : '').join('')}
+                `;
+            }
+            
+            // Línea de CINTURA (azul)
+            if (waists.filter(w => w > 0).length > 1) {
+                svgContent += `
+                    <polyline fill="none" stroke="#2196f3" stroke-width="3" points="${waistPoints}" stroke-linecap="round" stroke-linejoin="round"/>
+                    ${waists.map((w, i) => w > 0 ? `<circle cx="${xScale(i)}" cy="${yScaleWaist(w)}" r="5" fill="#2196f3" stroke="var(--darker)" stroke-width="2"/>` : '').join('')}
+                `;
+            }
+            
+            // Etiquetas de fechas en eje X
+            const dateLabels = measurements.map((m, i) => {
+                const date = new Date(m.date);
+                const label = date.toLocaleDateString('es-ES', { day: 'numeric', month: 'short' });
+                return `<text x="${xScale(i)}" y="${height - padding.bottom + 25}" text-anchor="middle" fill="var(--text-muted)" font-size="12">${label}</text>`;
+            }).join('');
+            svgContent += dateLabels;
+            
+            // Etiquetas de valores (último punto)
+            const lastIndex = measurements.length - 1;
+            svgContent += `
+                <text x="${xScale(lastIndex) + 15}" y="${yScaleWeight(weights[lastIndex]) + 5}" fill="var(--secondary)" font-size="12" font-weight="bold">${weights[lastIndex].toFixed(1)}kg</text>
+            `;
+            if (bodyFats[lastIndex] > 0) {
+                svgContent += `
+                    <text x="${xScale(lastIndex) + 15}" y="${yScaleFat(bodyFats[lastIndex]) + 5}" fill="#ff9800" font-size="12" font-weight="bold">${bodyFats[lastIndex].toFixed(1)}%</text>
+                `;
+            }
+            
+            svg.innerHTML = svgContent;
+        }
+        
         function renderDashboard() {
             const today = new Date().getDay();
             const routine = data.routines.find(r => r.days && r.days.includes(today));
